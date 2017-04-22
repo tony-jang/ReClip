@@ -1,0 +1,17 @@
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\bin\Debug\ReClip.exe.config
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\bin\Debug\ReClip.exe
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\bin\Debug\ReClip.pdb
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.csprojResolveAssemblyReference.cache
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\MainWindow.g.cs
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\App.g.cs
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip_MarkupCompile.cache
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip_MarkupCompile.lref
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\MainWindow.baml
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.g.resources
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.Properties.Resources.resources
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.csproj.GenerateResource.Cache
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.exe
+C:\Users\uutak\AppData\Local\Temporary Projects\ReClip\obj\Debug\ReClip.pdb
+D:\YT's Files\C# Files\C# Project\ReClip\ReClip\bin\Debug\ReClip.exe.config
+D:\YT's Files\C# Files\C# Project\ReClip\ReClip\obj\Debug\ReClip.exe
+D:\YT's Files\C# Files\C# Project\ReClip\ReClip\obj\Debug\ReClip.pdb
