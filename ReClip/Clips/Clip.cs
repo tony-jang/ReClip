@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReClip
+namespace ReClip.Clips
 {
-    public class ClipItem
+    [Serializable]
+    public abstract class Clip
     {
-        public ClipboardFormat Format { get; set; }
-        public object Data { get; set; }
+        public ClipboardFormat Format { get; internal set; }
     }
 }

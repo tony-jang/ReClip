@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,12 +55,21 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFExtension, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFExtension.1.1.0\lib\net45\WPFExtension.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Clips\ImageClip.cs" />
+    <Compile Include="Control\AniScrollViewer.cs" />
+    <Page Include="Control\ClipItemDesign.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,9 +79,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClipboardFormat.cs" />
-    <Compile Include="ClipboardMontior.cs" />
-    <Compile Include="ClipItem.cs" />
-    <Compile Include="Control\ClipViewItem.cs" />
+    <Compile Include="ClipboardHelper.cs" />
+    <Compile Include="Clips\Clip.cs" />
+    <Compile Include="Clips\StringClip.cs" />
+    <Compile Include="Control\ClipItem.cs" />
+    <Compile Include="Control\ClipItemDesign.xaml.cs">
+      <DependentUpon>ClipItemDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\ImageClipItem.cs" />
+    <Compile Include="Control\StringClipItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -108,6 +124,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\색배열 팁.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\BackImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\PictureIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,38 +4,54 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReClip"
-        mc:Ignorable="d"
-        Title="Re:Clip" Height="350" Width="525">
+        xmlns:c="clr-namespace:ReClip.Control"
+        mc:Ignorable="d" Background="#4C000000"
+        Title="Re:Clip" Height="150" Width="1500" AllowsTransparency="True" WindowStyle="None">
     
     <Grid>
-        <ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
-            <WrapPanel>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-                <Rectangle Fill="Black" Width="40" Height="20" Stroke="Red"/>
-            </WrapPanel>
-        </ScrollViewer>
-
+        
+        <ListView x:Name="ClipListView" HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Style="{DynamicResource ListViewStyle1}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <c:StringClipItem Text="Test Long Text!!!!!!!"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/BackImage.png" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+            <c:StringClipItem Text="Test"/>
+            <c:StringClipItem Text="Test"/>
+            <c:ImageClipItem Source="Image/색배열 팁.jpg" />
+        </ListView>
     </Grid>
 </Window>
