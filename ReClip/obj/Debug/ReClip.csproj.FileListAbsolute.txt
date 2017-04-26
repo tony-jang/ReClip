@@ -36,4 +36,11 @@ H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\GeneratedInternalType
 H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\WPFExtension.dll
 H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\Control\ClipItemDesign.g.cs
 H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\Control\ClipItemDesign.baml
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\System.ValueTuple.dll
 H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\ReClip.csprojResolveAssemblyReference.cache
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\Gma.System.MouseKeyHook.dll
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\GongSolutions.Wpf.DragDrop.dll
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\GongSolutions.Wpf.DragDrop.pdb
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\GongSolutions.Wpf.DragDrop.xml
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\Crc32C.NET.dll
+H:\장유탁 파일\Github Project\ReClip\ReClip\bin\Debug\Crc32C.NET.xml

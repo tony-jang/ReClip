@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Crc32C.NET, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Crc32C.NET.1.0.5.0\lib\net20\Crc32C.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Gma.System.MouseKeyHook, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MouseKeyHook.5.4.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
+    </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net45\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="LiteDB, Version=3.1.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.3.1.0\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
@@ -42,6 +52,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,8 +77,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Clips\FileClip.cs" />
     <Compile Include="Clips\ImageClip.cs" />
     <Compile Include="Control\AniScrollViewer.cs" />
+    <Compile Include="Control\OutlinedTextBlock.cs" />
+    <Compile Include="Database\BitmapCache\BitmapCache.cs" />
+    <Compile Include="Database\BitmapCache\BitmapCacheItem.cs" />
+    <Compile Include="Util\BitmapImageEx.cs" />
+    <Compile Include="Util\VisualEx.cs" />
+    <Compile Include="Util\IconUtilities.cs" />
     <Page Include="Control\ClipItemDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -78,14 +98,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClipboardFormat.cs" />
-    <Compile Include="ClipboardHelper.cs" />
+    <Compile Include="Util\ClipboardFormat.cs" />
+    <Compile Include="Util\ClipboardHelper.cs" />
     <Compile Include="Clips\Clip.cs" />
     <Compile Include="Clips\StringClip.cs" />
     <Compile Include="Control\ClipItem.cs" />
     <Compile Include="Control\ClipItemDesign.xaml.cs">
       <DependentUpon>ClipItemDesign.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\FileClipItem.cs" />
     <Compile Include="Control\ImageClipItem.cs" />
     <Compile Include="Control\StringClipItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -126,13 +147,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image\색배열 팁.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image\BackImage.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Image\PictureIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\FileIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\FolderIcon.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\Complete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

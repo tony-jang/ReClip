@@ -1,28 +1,40 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
 using System.Runtime.InteropServices;
 using ReClip;
 
-namespace ClipboardHelper
+namespace ReClip.Util
 {
     public static class ClipboardMonitor
     {
         public delegate void OnClipboardChangeEventHandler(ClipboardFormat format, object data);
         public static event OnClipboardChangeEventHandler OnClipboardChange;
 
+        private static SynchronizationContext context;
+
         public static void Start()
         {
+            InitializeContext();
+
             ClipboardWatcher.Start();
             ClipboardWatcher.OnClipboardChange += (ClipboardFormat format, object data) =>
             {
-                if (OnClipboardChange != null)
-                    OnClipboardChange(format, data);
+                context.Send(
+                    o => OnClipboardChange?.Invoke(format, data), null);
             };
+        }
+
+        private static void InitializeContext()
+        {
+            context = SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         public static void Stop()
         {
+            context = null;
+
             OnClipboardChange = null;
             ClipboardWatcher.Stop();
         }
@@ -115,26 +127,34 @@ namespace ClipboardHelper
 
             private void ClipChanged()
             {
-                IDataObject iData = Clipboard.GetDataObject();
-
-                ClipboardFormat? format = null;
-
-                foreach (var f in formats)
+                try
                 {
-                    if (iData.GetDataPresent(f))
+                    IDataObject iData = Clipboard.GetDataObject();
+
+                    ClipboardFormat? format = null;
+
+                    foreach (var f in formats)
                     {
-                        format = (ClipboardFormat)Enum.Parse(typeof(ClipboardFormat), f);
-                        break;
+                        if (iData.GetDataPresent(f))
+                        {
+                            format = (ClipboardFormat)Enum.Parse(typeof(ClipboardFormat), f);
+                            break;
+                        }
                     }
+
+                    object data = iData.GetData(format.ToString());
+
+                    if (data == null || format == null)
+                        return;
+
+                    OnClipboardChange?.Invoke((ClipboardFormat)format, data);
+
+                    if (data is IDisposable disposable)
+                        disposable.Dispose();
                 }
-
-                object data = iData.GetData(format.ToString());
-
-                if (data == null || format == null)
-                    return;
-
-                if (OnClipboardChange != null)
-                    OnClipboardChange((ClipboardFormat)format, data);
+                catch (Exception)
+                { }
+                
             }
         }
     }

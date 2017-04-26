@@ -4,20 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace ReClip.Clips
 {
     [Serializable]
-    class ImageClip : Clip
+    class FileClip : Clip
     {
-        public ImageClip(ImageSource Image)
+        public FileClip(string[] Data)
         {
-            this.Image = Image;
+            this.Data = Data;
             Time = DateTime.Now;
         }
-        public ImageSource Image { get; set; }
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
+        public string[] Data { get; set; }
         public DateTime Time { get; set; }
     }
 }

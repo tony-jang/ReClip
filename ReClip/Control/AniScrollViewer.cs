@@ -42,6 +42,23 @@ namespace ReClip.Control
             get { return (double)this.GetValue(CurrentVerticalOffsetProperty); }
             set { this.SetValue(CurrentVerticalOffsetProperty, value); }
         }
+    }
+    public static class AniScrollViewerEx
+    {
+        public static void ScrollToPosition(this AniScrollViewer viewer, double x)
+        {
+            DoubleAnimation horzAnim = new DoubleAnimation();
+            horzAnim.From = viewer.HorizontalOffset;
+            horzAnim.To = x;
+            horzAnim.DecelerationRatio = .2;
+            horzAnim.EasingFunction = new CircleEase();
+            horzAnim.Duration = new Duration(TimeSpan.FromMilliseconds(Math.Abs(horzAnim.From.Value - horzAnim.To.Value) + 100));
+            Storyboard sb = new Storyboard();
 
+            sb.Children.Add(horzAnim);
+            Storyboard.SetTarget(horzAnim, viewer);
+            Storyboard.SetTargetProperty(horzAnim, new PropertyPath(AniScrollViewer.CurrentHorizontalOffsetProperty));
+            sb.Begin();
+        }
     }
 }

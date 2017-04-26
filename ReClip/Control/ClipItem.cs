@@ -12,5 +12,7 @@ namespace ReClip.Control
     abstract class ClipItem : ListViewItem
     {
         //public static readonly DependencyProperty TimeStringFormatProperty = DependencyProperty.RegisterReadOnly(,,,);
+
+        public abstract void ShowComplete();
     }
 }

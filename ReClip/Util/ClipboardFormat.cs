@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReClip
+namespace ReClip.Util
 {
     public enum ClipboardFormat : byte
     {
+        None,
         Text,
         UnicodeText,
         Dib,

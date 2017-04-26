@@ -122,8 +122,9 @@
         </Setter>
     </Style>
     <!--#endregion-->
-    
 
+    <!--#region [  StringClipItem Style  ]-->
+    
     <Style TargetType="{x:Type c:StringClipItem}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -137,7 +138,7 @@
                 <ControlTemplate TargetType="{x:Type c:StringClipItem}">
                     <Grid Background="White">
                         <Grid.ToolTip>
-                            <ToolTip Content="Comment Here"/>
+                            <ToolTip Content="{TemplateBinding Text}"/>
                         </Grid.ToolTip>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -145,10 +146,13 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="T" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0"/>
-                        <TextBlock Grid.Row="1" VerticalAlignment="Center" FontSize="17" TextTrimming="CharacterEllipsis" Text="{TemplateBinding Text}" Margin="5,0" TextAlignment="Center">
+                        <TextBlock x:Name="tb" Grid.Row="1" VerticalAlignment="Center" FontSize="17" TextTrimming="CharacterEllipsis" Text="{TemplateBinding FirstText}" Margin="5,0" TextAlignment="Center">
 
                         </TextBlock>
                         <TextBlock Grid.Row="2" Text="3:00 PM" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5"/>
+
+                        <Image Grid.RowSpan="3" x:Name="CompleteImage" Source="/ReClip;component/Image/Complete.png" Visibility="Hidden" Height="70" Width="70" 
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"/>
 
                         <Rectangle x:Name="rect" Grid.RowSpan="3" Stroke="{TemplateBinding BorderBrush}"/>
                     </Grid>
@@ -157,11 +161,18 @@
                             <Setter Property="BorderBrush" Value="Red"/>
                             <Setter TargetName="rect" Property="StrokeThickness" Value="3"/>
                         </Trigger>
+                        <Trigger Property="Text" Value=" ">
+                            <Setter TargetName="tb" Property="Text" Value="(빈칸)"/>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--#endregion-->
+
+    <!--#region [  ImageClipItem Style  ]-->
     
     <Style TargetType="{x:Type c:ImageClipItem}">
         <Setter Property="Background" Value="White"/>
@@ -178,16 +189,14 @@
                         <Grid.ToolTip>
                             <ToolTip Content="Comment Here"/>
                         </Grid.ToolTip>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Image Source="{TemplateBinding Source}" Height="{TemplateBinding Height}" Stretch="Uniform"/>
-                        <Image Source="/ReClip;Component/Image/PictureIcon.png" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Width="15"/>
-                        <!--<TextBlock Grid.Row="2" Text="170423 15:00:00" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5"/>-->
 
+                        <Image Source="{TemplateBinding Source}" Height="{TemplateBinding Height}" Stretch="Uniform"/>
+
+                        <Image Source="/ReClip;Component/Image/PictureIcon.png" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Width="15"/>
+
+                        <Image Grid.RowSpan="3" x:Name="CompleteImage" Source="/ReClip;component/Image/Complete.png" Visibility="Hidden" Height="70" Width="70" 
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"/>
+                        
                         <Rectangle x:Name="rect" Stroke="{TemplateBinding BorderBrush}" />
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -206,7 +215,72 @@
         </Setter>
     </Style>
 
+    <!--#endregion-->
 
+    <!--#region [  FileClipItem Style  ]-->
+
+    <Style TargetType="{x:Type c:FileClipItem}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="120"/>
+        <Setter Property="Height" Value="100"/>
+        <Setter Property="Margin" Value="10"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:FileClipItem}">
+                    <Grid Background="{TemplateBinding Background}" Height="{TemplateBinding Height}">
+                        <Grid.ToolTip>
+                            <ToolTip Content="Comment Here"/>
+                        </Grid.ToolTip>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid Grid.RowSpan="3">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="{TemplateBinding FileIcon}" Stretch="Uniform"/>
+                            <c:OutlinedTextBlock x:Name="TBFileCount" 
+                                                 VerticalAlignment="Center" 
+                                                 TextAlignment="Center" 
+                                                 FontSize="30" 
+                                                 Stroke="Black" 
+                                                 FontWeight="Bold"
+                                                 Fill="White"
+                                                 Text="{TemplateBinding ExFilesCount}"/>
+                            <TextBlock Text="{TemplateBinding FileName}" TextTrimming="CharacterEllipsis" TextAlignment="Center" Grid.Row="1"/>
+                        </Grid>
+
+                        <Image Grid.Row="0" Source="/ReClip;Component/Image/FileIcon.png" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Width="15"/>
+
+                        <Image Grid.RowSpan="3" x:Name="CompleteImage" Source="/ReClip;component/Image/Complete.png" Visibility="Hidden" Height="70" Width="70" 
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"/>
+
+                        <Rectangle Grid.RowSpan="3" x:Name="rect" Stroke="{TemplateBinding BorderBrush}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="Red"/>
+                            <Setter TargetName="rect" Property="StrokeThickness" Value="3"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                    <ControlTemplate.Resources>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+                        </Style>
+                    </ControlTemplate.Resources>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
 
 
 </ResourceDictionary>

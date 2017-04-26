@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
+using ReClip.Database;
+
 namespace ReClip
 {
     /// <summary>
@@ -13,5 +15,11 @@ namespace ReClip
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            BitmapCache.Open();
+
+            base.OnStartup(e);
+        }
     }
 }
