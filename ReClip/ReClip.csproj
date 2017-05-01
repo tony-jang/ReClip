@@ -42,9 +42,6 @@
     <Reference Include="Gma.System.MouseKeyHook, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.4.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
-    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net45\GongSolutions.Wpf.DragDrop.dll</HintPath>
-    </Reference>
     <Reference Include="LiteDB, Version=3.1.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.3.1.0\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
@@ -79,13 +76,23 @@
     </ApplicationDefinition>
     <Compile Include="Clips\FileClip.cs" />
     <Compile Include="Clips\ImageClip.cs" />
+    <Compile Include="Clips\KeyGenerator.cs" />
     <Compile Include="Control\AniScrollViewer.cs" />
     <Compile Include="Control\OutlinedTextBlock.cs" />
     <Compile Include="Database\BitmapCache\BitmapCache.cs" />
     <Compile Include="Database\BitmapCache\BitmapCacheItem.cs" />
+    <Compile Include="Database\ClipItemData.cs" />
+    <Compile Include="Database\SettingDB.cs" />
+    <Compile Include="SettingWindow.xaml.cs">
+      <DependentUpon>SettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Setting\EnvironmentSetting.cs" />
     <Compile Include="Util\BitmapImageEx.cs" />
     <Compile Include="Util\VisualEx.cs" />
     <Compile Include="Util\IconUtilities.cs" />
+    <Compile Include="VersionWindow.xaml.cs">
+      <DependentUpon>VersionWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Control\ClipItemDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -113,7 +120,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Theme\ControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VersionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -135,6 +150,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -157,6 +173,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Image\Complete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ReClipIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image\ReClipIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

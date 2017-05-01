@@ -58,23 +58,8 @@ namespace ReClip.Util
         public static BitmapSource ToBitmapImage(this Bitmap bitmap)
         {
 
-            return (BitmapSource)Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
-                                                                      BitmapSizeOptions.FromWidthAndHeight(bitmap.Width, bitmap.Height));
-
-
-            var bitmapImage = new BitmapImage();
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
-
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-            }
-
-            return bitmapImage;
+            return Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
+                                                         BitmapSizeOptions.FromWidthAndHeight(bitmap.Width, bitmap.Height));
         }
 
         public static ImageSource ToThumbnail(this Bitmap bitmap)

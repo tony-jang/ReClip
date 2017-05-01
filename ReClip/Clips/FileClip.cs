@@ -1,4 +1,5 @@
-﻿using ReClip.Util;
+﻿using LiteDB;
+using ReClip.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,26 @@ namespace ReClip.Clips
     [Serializable]
     class FileClip : Clip
     {
-        public FileClip(string[] Data)
+        public FileClip(string[] Data) : this(Data, KeyGenerator.GenerateKey())
+        {
+        }
+
+        public FileClip(string[] data, long Key)
         {
             this.Data = Data;
             Time = DateTime.Now;
+
+            Id = Key;
         }
+
+        public FileClip()
+        {
+        }
+
+     
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public string[] Data { get; set; }
         public DateTime Time { get; set; }
+        public long Id { get; set; }
     }
 }

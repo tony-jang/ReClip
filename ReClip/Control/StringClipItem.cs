@@ -43,16 +43,16 @@ namespace ReClip.Control
             set
             {
                 SetValue(TextProperty, value);
-                string str = value.Replace("\r\n", " ");
+                string str = value.Replace("\r\n", " ").Trim();
                 FirstText = str.Substring(0, (str.Length >= 20 ? 20 : str.Length));
             }
         }
 
 
-        public StringClipItem()
+        public StringClipItem() : base()
         {
         }
-        public StringClipItem(string itm)
+        public StringClipItem(string itm) : base()
         {
             Text = itm;
         }

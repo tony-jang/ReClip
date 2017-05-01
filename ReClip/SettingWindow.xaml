@@ -1,0 +1,94 @@
+﻿<Window x:Class="ReClip.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReClip"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        Title="Re:Clip 설정" Height="700" Width="400" ResizeMode="NoResize">
+    <!--500-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Grid.Row="0" Margin="20">
+                <GroupBox Header="내용 관리" Margin="0,10,0,0">
+                    <StackPanel Margin="10">
+                        <TextBlock>
+                            저장되어 있는 아이템의 갯수 : <Run x:Name="ItemCount" Text="15" FontWeight="Bold"/>개
+                        </TextBlock>
+                        <TextBlock Margin="0,5,0,0" Foreground="Gray">
+                            ※ 삭제된 아이템은 복구되지 않습니다.
+                        </TextBlock>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Row="0" x:Name="btnDelAll" Content="모든 클립 삭제" Padding="5" Margin="5" Click="btnDelAll_Click"/>
+                            <Button Grid.Row="1" x:Name="btnDelText" Content="모든 텍스트 클립 삭제" Padding="5" Margin="5" Click="btnDelTypes_Click"/>
+                            <Button Grid.Row="2" x:Name="btnDelImage" Content="모든 사진 클립 삭제" Padding="5" Margin="5" Click="btnDelTypes_Click"/>
+                            <Button Grid.Row="3" x:Name="btnDelFile" Content="모든 파일 클립 삭제" Padding="5" Margin="5" Click="btnDelTypes_Click"/>
+                            <Button Grid.Row="0" Grid.Column="1" x:Name="btnDelRecent5" Content="오래된 5개 클립 삭제" Padding="5" Margin="5" Click="btnDelRecentItem_Click" Tag="5"/>
+                            <Button Grid.Row="1" Grid.Column="1" x:Name="btnDelRecent10" Content="오래된 10개 클립 삭제" Padding="5" Margin="5" Click="btnDelRecentItem_Click" Tag="10"/>
+                            <Button Grid.Row="2" Grid.Column="1" x:Name="btnDelRecent20" Content="오래된 20개 클립 삭제" Padding="5" Margin="5" Click="btnDelRecentItem_Click" Tag="20"/>
+                            <Button Grid.Row="3" Grid.Column="1" x:Name="btnDelRecent30" Content="오래된 30개 클립 삭제" Padding="5" Margin="5" Click="btnDelRecentItem_Click" Tag="30"/>
+                        </Grid>
+                        
+                    </StackPanel>
+                </GroupBox>
+                
+                <GroupBox Header="기본 설정">
+                    <StackPanel Margin="10">
+                        <CheckBox x:Name="cbClipboard" Content="클립보드 저장 기능 활성화" Checked="cbClipboard_Checked" Unchecked="cbClipboard_Checked"/>
+                        <CheckBox x:Name="cbThumbnailStretch" Content="썸네일 늘리기" Margin="0,10,0,0" Checked="cbThumbnailStretch_Checked" Unchecked="cbThumbnailStretch_Checked"/>
+                        <TextBlock Text="※ 프로그램을 재실행 하면 적용됩니다." Margin="0,5,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+                
+                <GroupBox Header="클립보드 저장" Margin="0,10,0,0">
+                    <StackPanel Margin="10">
+                        <TextBlock Margin="0,10,0,0">
+                    아이템 갯수가
+                    <ComboBox x:Name="cbSvRecents" Margin="0,-4" SelectedIndex="3" SelectionChanged="cbSvRecents_SelectionChanged">
+                        <ComboBoxItem Content="10"/>
+                        <ComboBoxItem Content="20"/>
+                        <ComboBoxItem Content="30"/>
+                        <ComboBoxItem Content="50"/>
+                        <ComboBoxItem Content="75"/>
+                        <ComboBoxItem Content="100"/>
+                        <ComboBoxItem Content="무제한"/>
+                    </ComboBox> 개 이상이라면 삭제
+                        </TextBlock>
+
+                        <TextBlock Text="다음의 아이템의 경우 저장 제외" Margin="0,12,0,0"/>
+                        <CheckBox x:Name="cbSaveExceptImg" Content="이미지 아이템"  Margin="0,10,0,0"  Checked="cbSaveExceptImg_Checked"  Unchecked="cbSaveExceptImg_Checked" />
+                        <CheckBox x:Name="cbSaveExceptText" Content="텍스트 아이템"  Margin="0,10,0,0" Checked="cbSaveExceptText_Checked" Unchecked="cbSaveExceptText_Checked"/>
+                        <CheckBox x:Name="cbSaveExceptFile" Content="파일 아이템"  Margin="0,10,0,0"   Checked="cbSaveExceptFile_Checked" Unchecked="cbSaveExceptFile_Checked"/>
+                    </StackPanel>
+                </GroupBox>
+                
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="2" HorizontalAlignment="Right" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Content="되돌리기" Padding="25,5" Click="Redo_Click"/>
+            <Button x:Name="btnCancel" Content="취소" Padding="25,5" Grid.Column="2" Click="btnCancel_Click"/>
+            <Button x:Name="btnSave" Content="저장" Padding="25,5" Grid.Column="4" Click="btnOK_Click"/>
+        </Grid>
+    </Grid>
+</Window>

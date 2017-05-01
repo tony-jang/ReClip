@@ -10,11 +10,17 @@ namespace ReClip.Clips
     [Serializable]
     class StringClip : Clip
     {
-        public StringClip(string Data)
+        public StringClip(string Data) : this(Data, KeyGenerator.GenerateKey())
+        {
+        }
+
+        public StringClip(string Data, long Key)
         {
             this.Data = Data;
             Time = DateTime.Now;
+            Id = Key;
         }
+
         public StringClip()
         {
             _data = "";
@@ -25,5 +31,6 @@ namespace ReClip.Clips
         private string _data;
         public string Data { get => _data; set => _data = value; }
         public DateTime Time { get; set; }
+        public long Id { get; set; }
     }
 }

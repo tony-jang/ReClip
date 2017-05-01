@@ -24,12 +24,11 @@ namespace ReClip.Control
 
         public uint CRC32 { get; }
 
-        public ImageClipItem()
+        public ImageClipItem() : base()
         {
-
         }
         
-        public ImageClipItem(ImageSource image, uint crc32)
+        public ImageClipItem(ImageSource image, uint crc32) : base()
         {
             this.Source = image;
             this.CRC32 = crc32;
@@ -42,10 +41,11 @@ namespace ReClip.Control
             CompImage = Template.FindName("CompleteImage", this) as Image;
         }
 
-
+        Thread thr;
+        
         public override void ShowComplete()
         {
-            Thread thr = new Thread(() =>
+            thr = new Thread(() =>
             {
                 Dispatcher.Invoke(() => { CompImage.Visibility = Visibility.Visible; });
                 Thread.Sleep(1000);

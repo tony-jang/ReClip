@@ -1,4 +1,5 @@
-﻿using ReClip.Util;
+﻿using LiteDB;
+using ReClip.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace ReClip.Clips
 {
     public interface Clip
     {
+        [BsonId]
+        long Id { get; set; }
         ClipboardFormat Format { get; }
         DateTime Time { get; set; }
     }

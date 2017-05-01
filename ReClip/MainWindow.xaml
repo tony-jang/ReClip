@@ -6,18 +6,20 @@
         xmlns:local="clr-namespace:ReClip"
         xmlns:c="clr-namespace:ReClip.Control"
         mc:Ignorable="d" Background="{x:Null}"
-        Title="Re:Clip" Height="150" Width="1500" AllowsTransparency="True" WindowStyle="None">
+        Title="Re:Clip" Height="150" Width="1500" AllowsTransparency="True" WindowStyle="None" ShowInTaskbar="False">
     
     <Grid Background="#4C000000">
-        <TextBlock x:Name="TBName" Text="asdf" Foreground="White"/>
+        <!--<TextBlock x:Name="TBName" Text="asdf" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
         <ListView x:Name="ClipListView" HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Style="{DynamicResource ListViewStyle1}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <c:StringClipItem Text="Test Long Text!!!!!!!"/>
+            <!--<c:StringClipItem Text="Test Long Text!!!!!!!"/>-->
         </ListView>
+        <TextBlock x:Name="TBInfo" Foreground="White" Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다."
+                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
     
 </Window>

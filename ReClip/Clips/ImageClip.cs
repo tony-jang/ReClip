@@ -11,13 +11,24 @@ namespace ReClip.Clips
     [Serializable]
     class ImageClip : Clip
     {
-        public ImageClip(ImageSource Image)
+        public ImageClip(uint CRC32) : this(CRC32, KeyGenerator.GenerateKey())
         {
-            this.Image = Image;
-            Time = DateTime.Now;
         }
-        public ImageSource Image { get; set; }
+
+        public ImageClip(uint CRC32, long Key)
+        {
+            this.CRC32 = CRC32;
+            Time = DateTime.Now;
+
+            Id = Key;
+        }
+
+        public ImageClip()
+        {
+        }
+        public uint CRC32 { get; set; }
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public DateTime Time { get; set; }
+        public long Id { get; set; }
     }
 }

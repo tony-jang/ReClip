@@ -64,7 +64,7 @@ namespace ReClip.Control
 
 
 
-        public FileClipItem(string[] FilePaths)
+        public FileClipItem(string[] FilePaths) : base()
         {
             this.FilePaths = FilePaths;
             if (Directory.Exists(FilePaths.First()))
@@ -79,6 +79,11 @@ namespace ReClip.Control
             }
             
         }
+        public FileClipItem() : base()
+        {
+            FilePaths = new string[] { };
+        }
+
 
         OutlinedTextBlock TBFileCount;
         Image CompImage;
@@ -105,14 +110,10 @@ namespace ReClip.Control
             thr.Start();
         }
 
-        public FileClipItem()
-        {
-            FilePaths = new string[] { };
-        }
 
         (bool, Visibility) LastState = (false, Visibility.Collapsed);
         string[] _FilePaths = new string[] { };
-        string[] FilePaths
+        public string[] FilePaths
         {
             get=> _FilePaths;
             set
@@ -145,10 +146,8 @@ namespace ReClip.Control
                     }
                     else
                     {
-                        try
-                        { TBFileCount.Visibility = Visibility.Visible; }
-                        catch (Exception)
-                        { LastState = (true, Visibility.Visible); }
+                        try { TBFileCount.Visibility = Visibility.Visible; }
+                        catch (Exception) { LastState = (true, Visibility.Visible); }
                     }
                 }
 
