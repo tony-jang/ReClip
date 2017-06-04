@@ -20,13 +20,16 @@ using ReClip.Clips;
 using System.Threading;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
+using ReClip.Windows;
 
 namespace ReClip
 {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : LayeredWindow
     {
 
         public MainWindow()
@@ -37,6 +40,8 @@ namespace ReClip
 
             ClipboardMonitor.Start();
             ClipboardMonitor.OnClipboardChange += ClipboardMonitor_OnClipboardChange;
+
+            ShowActivated = false;
 
             ConnectKeyHook();
 
@@ -62,10 +67,31 @@ namespace ReClip
                 ClipboardMonitor.Stop();
                 DisConnectKeyHook();
             };
-
-            VersionWindow vw = new VersionWindow();
-            vw.ShowDialog();
         }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+        }
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            //debugtb.Text += " " + msg.ToString();
+            if (msg == WM_MOUSEACTIVATE)
+            {
+                handled = true;
+                return new IntPtr(MA_NOACTIVATE);
+            }
+            else
+            {
+                return IntPtr.Zero;
+            }
+
+            
+        }
+        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int MA_NOACTIVATE = 0x0003;
 
         private void InitalizeItem()
         {
@@ -180,7 +206,6 @@ namespace ReClip
             {
                 ClipListView.Visibility = Visibility.Hidden;
                 TBInfo.Visibility = Visibility.Visible;
-                this.Focus();
             }
             else
             {
@@ -689,9 +714,6 @@ namespace ReClip
                     this.Top = LastTop; 
 
                     this.Width = screen.Bounds.Width;
-
-                    this.Focus();
-                    this.Topmost = true;
                 }
             }
         }

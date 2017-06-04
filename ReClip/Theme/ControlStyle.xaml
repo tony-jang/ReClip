@@ -149,7 +149,7 @@
                         <TextBlock x:Name="tb" Grid.Row="1" VerticalAlignment="Center" FontSize="17" TextTrimming="CharacterEllipsis" Text="{TemplateBinding FirstText}" Margin="5,0" TextAlignment="Center">
 
                         </TextBlock>
-                        <TextBlock Grid.Row="2" Text="3:00 PM" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5"/>
+                        <!--<TextBlock Grid.Row="2" Text="{TemplateBinding Length}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5"/>-->
 
                         <Image Grid.RowSpan="3" x:Name="CompleteImage" Source="/ReClip;component/Image/Complete.png" Visibility="Hidden" Height="70" Width="70" 
                                VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform"/>

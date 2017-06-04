@@ -83,6 +83,11 @@
     <Compile Include="Database\BitmapCache\BitmapCacheItem.cs" />
     <Compile Include="Database\ClipItemData.cs" />
     <Compile Include="Database\SettingDB.cs" />
+    <Compile Include="Interop\Constants.cs" />
+    <Compile Include="Interop\ExternDll.cs" />
+    <Compile Include="Interop\NativeMethods.cs" />
+    <Compile Include="Interop\SafeNativeMethods.cs" />
+    <Compile Include="Interop\UnsafeNativeMethods.cs" />
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
@@ -93,6 +98,7 @@
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LayeredWindow.cs" />
     <Page Include="Control\ClipItemDesign.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -18,7 +18,6 @@ namespace ReClip.Clips
         public FileClip(string[] data, long Key)
         {
             this.Data = Data;
-            Time = DateTime.Now;
 
             Id = Key;
         }
@@ -30,7 +29,6 @@ namespace ReClip.Clips
      
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public string[] Data { get; set; }
-        public DateTime Time { get; set; }
         public long Id { get; set; }
     }
 }

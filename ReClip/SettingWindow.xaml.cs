@@ -31,7 +31,6 @@ namespace ReClip
             SyncItem();
 
             this.KeyDown += SettingWindow_KeyDown;
-
         }
 
         private void SettingWindow_KeyDown(object sender, KeyEventArgs e)
