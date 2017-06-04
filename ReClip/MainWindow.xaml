@@ -1,27 +1,45 @@
-﻿<w:LayeredWindow x:Class="ReClip.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:w="clr-namespace:ReClip.Windows"
-        xmlns:local="clr-namespace:ReClip"
-        xmlns:c="clr-namespace:ReClip.Control"
-        mc:Ignorable="d" Background="{x:Null}"
-        Title="Re:Clip" Height="150" Width="1500" AllowsTransparency="True" WindowStyle="None" ShowInTaskbar="False">
-    
+﻿<w:LayeredWindow
+    x:Class="ReClip.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:ReClip.Control"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ReClip"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w="clr-namespace:ReClip.Windows"
+    Title="Re:Clip"
+    Width="1500"
+    Height="150"
+    AllowsTransparency="True"
+    Background="{x:Null}"
+    ShowInTaskbar="False"
+    Topmost="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
     <Grid Background="#4C000000">
         <!--<TextBlock x:Name="TBName" Text="asdf" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
-        <ListView x:Name="ClipListView" HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Style="{DynamicResource ListViewStyle1}">
+        <ListView
+            x:Name="lvClip"
+            HorizontalAlignment="Center"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            Style="{DynamicResource ListViewStyle1}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <!--<c:StringClipItem Text="Test Long Text!!!!!!!"/>-->
         </ListView>
-        <TextBlock x:Name="TBInfo" Foreground="White" Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다."
-                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock
+            x:Name="TBInfo"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="White"
+            Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다." />
         <!--<TextBlock x:Name="debugtb" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Foreground="White"/>-->
     </Grid>
-    
+
 </w:LayeredWindow>

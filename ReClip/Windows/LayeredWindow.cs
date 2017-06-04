@@ -31,17 +31,13 @@ namespace ReClip.Windows
 
             var helper = new WindowInteropHelper(this);
             var hwndSource = HwndSource.FromHwnd(helper.Handle);
-
+            
             IntPtr Handle = hwndSource.Handle;
-
             var ws = (WS)UnsafeNativeMethods.GetWindowLong(Handle, (int)GWL.STYLE);
             var wsex = (WSEX)UnsafeNativeMethods.GetWindowLong(Handle, (int)GWL.EXSTYLE);
-
             
-
             ws = WS.VISIBLE | WS.OVERLAPPED | WS.POPUP;
-            // | WSEX.NOACTIVATE
-            wsex = WSEX.APPWINDOW | WSEX.LAYERED | WSEX.TOPMOST | WSEX.NOACTIVATE;
+            wsex = WSEX.LAYERED | WSEX.TOPMOST | WSEX.NOACTIVATE;
 
             UnsafeNativeMethods.SetWindowLong(Handle, (int)GWL.STYLE, (int)ws);
             UnsafeNativeMethods.SetWindowLong(Handle, (int)GWL.EXSTYLE, (int)wsex);

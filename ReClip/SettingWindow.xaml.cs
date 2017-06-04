@@ -52,7 +52,7 @@ namespace ReClip
 
         public void SyncItem()
         {
-            ItemCount.Text = ((MainWindow)Application.Current.MainWindow).ClipListView.Items.Count.ToString();
+            ItemCount.Text = ((MainWindow)Application.Current.MainWindow).lvClip.Items.Count.ToString();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace ReClip
 
         private void btnDelAll_Click(object sender, RoutedEventArgs e)
         {
-            if (wdw.ClipListView.Items.Count == 0)
+            if (wdw.lvClip.Items.Count == 0)
             {
                 MessageBox.Show("삭제할 아이템이 없습니다", "Re:Clip 삭제 확인");
                 return;
@@ -114,7 +114,7 @@ namespace ReClip
                     "Re:Clip 삭제 확인", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
 
 
-            wdw.ClipListView.Items.Clear();
+            wdw.lvClip.Items.Clear();
         }
 
         private void btnDelTypes_Click(object sender, RoutedEventArgs e)
@@ -146,7 +146,7 @@ namespace ReClip
             }
 
 
-            var itm = wdw.ClipListView.Items.Cast<ClipItem>()
+            var itm = wdw.lvClip.Items.Cast<ClipItem>()
                                       .Where(i => FindType == i.GetType())
                                       .ToList();
 
@@ -159,7 +159,7 @@ namespace ReClip
             if (MessageBox.Show($"정말 삭제하시겠습니까? {itm.Count}개의 {FindTypeString} 아이템이 Re:Clip에서 영구적으로 삭제됩니다.",
                 "Re:Clip 삭제 확인", MessageBoxButton.YesNo) == MessageBoxResult.No) return;
 
-            itm.ForEach(i=> wdw.ClipListView.Items.Remove(i));
+            itm.ForEach(i=> wdw.lvClip.Items.Remove(i));
 
             SyncItem();
         }
@@ -167,7 +167,7 @@ namespace ReClip
         private void btnDelRecentItem_Click(object sender, RoutedEventArgs e)
         {
             int DeleteCount = int.Parse(((System.Windows.Controls.Control)sender).Tag.ToString());
-            int Count = wdw.ClipListView.Items.Count;
+            int Count = wdw.lvClip.Items.Count;
 
             if (Count > DeleteCount)
             {
@@ -187,8 +187,8 @@ namespace ReClip
 
             for (int i = 0; i < DeleteCount; i++)
             {
-                if (wdw.ClipListView.Items.Count == 0) break;
-                wdw.ClipListView.Items.RemoveAt(0);
+                if (wdw.lvClip.Items.Count == 0) break;
+                wdw.lvClip.Items.RemoveAt(0);
             }
             SyncItem();
         }
