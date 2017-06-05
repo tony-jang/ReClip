@@ -59,13 +59,22 @@ namespace ReClip.Control
 
         public override void ShowComplete()
         {
-            Thread thr = new Thread(() =>
+            try
             {
-                Dispatcher.Invoke(() => { CompImage.Visibility = Visibility.Visible; });
-                Thread.Sleep(1000);
-                Dispatcher.Invoke(() => { CompImage.Visibility = Visibility.Hidden; });
-            });
-            thr.Start();
+                if (CompImage != null)
+                {
+                    Thread thr = new Thread(() =>
+                    {
+                        Dispatcher.Invoke(() => { CompImage.Visibility = Visibility.Visible; });
+                        Thread.Sleep(1000);
+                        Dispatcher.Invoke(() => { CompImage.Visibility = Visibility.Hidden; });
+                    });
+                    thr.Start();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

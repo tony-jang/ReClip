@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using ReClip.Database;
+using System.Threading;
 
 namespace ReClip
 {
@@ -15,11 +16,29 @@ namespace ReClip
     /// </summary>
     public partial class App : Application
     {
+        private Mutex _mutex;
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            BitmapCache.Open();
+            bool isNew = true;
+            Mutex mutex = new Mutex(true, "ReClip", out isNew);
 
-            base.OnStartup(e);
+            if (isNew == false)
+            {
+                Environment.Exit(0);
+                // 중복실행시 처리
+            }
+            else
+            {
+                // 실행
+                mutex.ReleaseMutex();
+
+                BitmapCache.Open();
+
+                base.OnStartup(e);
+            }
+
+            
         }
     }
 }

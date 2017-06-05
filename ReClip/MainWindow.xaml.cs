@@ -38,11 +38,14 @@ namespace ReClip
     /// </summary>
     public partial class MainWindow : LayeredWindow
     {
+        IKeyboardMouseEvents hook = Hook.GlobalEvents();
+
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeHotKeys();
+            InitalizeNotifyIcon();
 
             Clipboard.Clear();
 
@@ -50,29 +53,45 @@ namespace ReClip
             ClipboardMonitor.OnClipboardChange += ClipboardMonitor_OnClipboardChange;
 
             ShowActivated = false;
-            
+
             lvClip.Items.Clear();
             lvClip.SelectionChanged += ClipListView_SelectionChanged;
             lvClip.PreviewMouseLeftButtonDown += ClipListView_PreviewMouseLeftButtonDown;
             lvClip.MouseMove += ClipListView_MouseMove;
 
-            
+
             this.Loaded += MainWindow_Loaded;
             this.PreviewKeyDown += MainWindow_KeyDown;
             this.Closing += MainWindow_Closing;
 
             SetWindow();
             this.Hide();
-            InitalizeNotifyIcon();
+            //InitalizeNotifyIcon();
 
             itemDB = new ClipItemData();
             settingdb = new SettingDB();
             InitalizeItem();
-            
-            this.Closed += (sender, e) => 
+
+            this.Closed += (sender, e) =>
             {
                 ClipboardMonitor.Stop();
             };
+            
+            
+            hook.MouseDown += Hook_MouseDown;
+            hook.MouseUp += Hook_MouseUp;
+        }
+        
+
+        private void Hook_MouseUp(object sender, f.MouseEventArgs e)
+        {
+            if (this.IsVisible)
+                Disappear();
+        }
+
+        private void Hook_MouseDown(object sender, f.MouseEventArgs e)
+        {
+            
         }
 
         private void InitializeHotKeys()
@@ -80,16 +99,165 @@ namespace ReClip
             HotKeyManager.AddHotKey(
                 new HotKeyData()
                 {
-                    Name = "Ctrl + F Up",
+                    Name = "Visible",
+
+                    Alt = true,
+                    Key = f.Keys.Up,
+                    Action = Act_Appear
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "InVisible1",
+
+                    Key = f.Keys.Escape,
+                    Action = Act_Disappear
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "InVisible2",
+
+                    Alt = true,
+                    Key = f.Keys.Down,
+                    Action = Act_Disappear
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "MoveLeft",
+
+                    Key = f.Keys.Left,
+                    Action = Act_MoveLeft
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "MoveRight",
+
+                    Key = f.Keys.Right,
+                    Action = Act_MoveRight
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "DelItem",
+
+                    Key = f.Keys.Delete,
+                    Action = Act_Delete
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "CopyItem",
+
+                    Alt = true,
+                    Key = f.Keys.C,
+                    Action = Act_Copy
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "PasteItem",
 
                     Control = true,
-                    Key = f.Keys.F,
-
-                    Action = hk =>
-                    {
-                        MessageBox.Show(HotKeyManager.GetHotKey("Ctrl + F Up").Name);
-                    }
+                    Key = f.Keys.V,
+                    Action = Act_Paste
                 });
+        }
+
+        private void Act_Paste(HotKeyData obj)
+        {
+            if (!this.IsVisible)
+                return;
+
+            SetClipboard(lvClip.SelectedItem);
+            Disappear();
+        }
+
+        private void Act_Copy(HotKeyData data)
+        {
+            if (!this.IsVisible)
+                return;
+
+            SetClipboard(lvClip.SelectedItem);
+
+            if (this.IsVisible)
+                data.Prevent = true;
+        }
+
+        private void Act_Delete(HotKeyData data)
+        {
+            if (!this.IsVisible)
+                return;
+
+            LastIndex = lvClip.SelectedIndex;
+
+            if (lvClip.SelectedItem is ClipItem itm)
+            {
+                itemDB.Remove(itm.Id);
+            }
+            lvClip.Items.Remove(lvClip.SelectedItem);
+
+            LastFormat = ClipboardFormat.None;
+            LastImage = null;
+            LastStrArr = null;
+            LastText = "";
+
+            data.Prevent = true;
+        }
+
+        private void Act_MoveRight(HotKeyData data)
+        {
+            if (!this.IsVisible)
+                return;
+
+            int index = lvClip.SelectedIndex + 1;
+
+            lvClip.SelectedIndex = index;
+
+            ((ListViewItem)lvClip.SelectedItem)?.Focus();
+
+            data.Prevent = true;
+        }
+
+        private void Act_MoveLeft(HotKeyData obj)
+        {
+            if (!this.IsVisible)
+                return;
+
+            int index = lvClip.SelectedIndex - 1;
+
+            if (index < 0) index = 0;
+
+            lvClip.SelectedIndex = index;
+            
+            ((ListViewItem)lvClip.SelectedItem)?.Focus();
+
+            obj.Prevent = true;
+        }
+
+        public void Act_Appear(HotKeyData data)
+        {
+            if (!this.IsVisible) data.Prevent = true;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Show();
+                SetWindow();
+                Appear();
+            });
+        }
+
+        public void Act_Disappear(HotKeyData data)
+        {
+            if (this.IsVisible) data.Prevent = true;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Disappear();
+            });
+            
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -117,7 +285,7 @@ namespace ReClip
 
         private void InitalizeItem()
         {
-            foreach(Clip clip in itemDB.GetAllItem())
+            foreach (Clip clip in itemDB.GetAllItem())
             {
                 AddClip(clip);
             }
@@ -133,11 +301,27 @@ namespace ReClip
             }
             else if (clip is ImageClip ImgClip)
             {
-                Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(), ImgClip.CRC32) { Id = ImgClip.Id };
+                try
+                {
+                    Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(), ImgClip.CRC32) { Id = ImgClip.Id };
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+
             }
             else if (clip is FileClip fileClip)
             {
-                Item = new FileClipItem(fileClip.Data) { Id = fileClip.Id };
+                try
+                {
+                    Item = new FileClipItem(fileClip.Data) { Id = fileClip.Id };
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+                
             }
             else
             {
@@ -152,7 +336,7 @@ namespace ReClip
                 TBInfo.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
             }
-            
+
 
         }
 
@@ -190,7 +374,7 @@ namespace ReClip
 
 
         #region [  Initalize NotifyIcon  ]
-        
+
         f.NotifyIcon icon;
         public void InitalizeNotifyIcon()
         {
@@ -199,7 +383,7 @@ namespace ReClip
             f.MenuItem[] itms = { new f.MenuItem() { Index = 0, Text = "버전 정보" },
                                   new f.MenuItem() { Index = 1, Text = "설정"},
                                   new f.MenuItem() { Index = 2, Text = "종료"}};
-            
+
             menu.MenuItems.AddRange(itms);
 
             ((INotifyCollectionChanged)lvClip.Items).CollectionChanged += Item_Changed;
@@ -210,7 +394,8 @@ namespace ReClip
 
             itms[2].Click += delegate (object o, EventArgs e) { Environment.Exit(0); };
 
-            icon = new f.NotifyIcon() {
+            icon = new f.NotifyIcon()
+            {
                 ContextMenu = menu,
                 Text = "Re:Clip - Running",
                 Visible = true,
@@ -218,7 +403,7 @@ namespace ReClip
                 BalloonTipTitle = "Re:Clip",
                 BalloonTipText = "Re:Clip Running!"
             };
-            
+
             icon.ShowBalloonTip(1000);
         }
 
@@ -244,31 +429,23 @@ namespace ReClip
         int LastIndex = 0;
 
         #endregion
-        
+
         #region [  KeyDown Event  ]
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
         }
 
 
         private void Itm_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
         }
 
         //int Counter = 0;
 
         OpenState process = OpenState.None;
-       
-        
-
-
-
-        private void GlobalHook_KeyUp(object sender, f.KeyEventArgs e)
-        {
-        }
 
 
         #endregion
@@ -344,7 +521,6 @@ namespace ReClip
                         Item = new ImageClipItem(thumbnail, crc32);
                         Item.Id = Key;
                         
-
                         if (lvClip.Items
                             .Cast<ClipItem>()
                             .Where(child => child is ImageClipItem)
@@ -352,10 +528,8 @@ namespace ReClip
                         {
                             return;
                         }
-                        
+
                         BitmapDB.AddBitmap(bmp);
-
-
 
                         itemDB.Add(new ImageClip(crc32, Key));
 
@@ -367,7 +541,7 @@ namespace ReClip
                 {
                     if (data is string[] files)
                     {
-                        if (format != LastFormat || LastStrArr != files)
+                        if (format != LastFormat || !Enumerable.SequenceEqual(LastStrArr, files))
                         {
                             long Key = KeyGenerator.GenerateKey();
 
@@ -408,98 +582,98 @@ namespace ReClip
                 Handled = false;
                 if (format == ClipboardFormat.Text) LastText = data.ToString();
             }
-            
+
             LastFormat = format;
         }
 
 
 
-//        if (e.Alt)
-//            {
-//                process = OpenState.None;
-//                switch (e.KeyCode)
-//                {
-//                    case f.Keys.Left:
-//                        process = OpenState.MoveLeft;
-//                        break;
-//                    case f.Keys.Right:
-//                        process = OpenState.MoveRight;
-//                        break;
-//                    case f.Keys.Up:
-//                        process = OpenState.General;
-//                        break;
-//                }
-//                if (process == OpenState.None) return;
+        //        if (e.Alt)
+        //            {
+        //                process = OpenState.None;
+        //                switch (e.KeyCode)
+        //                {
+        //                    case f.Keys.Left:
+        //                        process = OpenState.MoveLeft;
+        //                        break;
+        //                    case f.Keys.Right:
+        //                        process = OpenState.MoveRight;
+        //                        break;
+        //                    case f.Keys.Up:
+        //                        process = OpenState.General;
+        //                        break;
+        //                }
+        //                if (process == OpenState.None) return;
 
-//                e.SuppressKeyPress = true;
-//                Application.Current.Dispatcher.Invoke(() =>
-//                {
-//                    if (this.Visibility == Visibility.Hidden)
-//                    {
-//        this.Show();
-//        SetWindow();
-//        Appear();
-//    }
-//    });
-//            }
-//            if (e.KeyCode == f.Keys.Escape)
-//            {
-//                Application.Current.Dispatcher.Invoke(() => { Disappear(); });
-//            }
-//            else if (e.KeyCode == f.Keys.Down && e.Alt)
-//            {
-//                Disappear();
-//            }
-//            else if (e.KeyCode == f.Keys.S && e.Control)
-//            {
-//                SettingWindow sw = new SettingWindow(settingdb.GetSetting());
-//settingdb.SetSetting(sw.ShowDialog());
-//            }
-//            else if (e.KeyCode == f.Keys.Left || e.KeyCode == f.Keys.Right)
-//            {
-//                int index = lvClip.SelectedIndex;
+        //                e.SuppressKeyPress = true;
+        //                Application.Current.Dispatcher.Invoke(() =>
+        //                {
+        //                    if (this.Visibility == Visibility.Hidden)
+        //                    {
+        //        this.Show();
+        //        SetWindow();
+        //        Appear();
+        //    }
+        //    });
+        //            }
+        //            if (e.KeyCode == f.Keys.Escape)
+        //            {
+        //                Application.Current.Dispatcher.Invoke(() => { Disappear(); });
+        //            }
+        //            else if (e.KeyCode == f.Keys.Down && e.Alt)
+        //            {
+        //                Disappear();
+        //            }
+        //            else if (e.KeyCode == f.Keys.S && e.Control)
+        //            {
+        //                SettingWindow sw = new SettingWindow(settingdb.GetSetting());
+        //settingdb.SetSetting(sw.ShowDialog());
+        //            }
+        //            else if (e.KeyCode == f.Keys.Left || e.KeyCode == f.Keys.Right)
+        //            {
+        //                int index = lvClip.SelectedIndex;
 
-//                if (e.KeyCode == f.Keys.Left)
-//                {
-//                    index--;
-//                }
-//                else if (e.KeyCode == f.Keys.Right)
-//                {
-//                    index++;
-//                }
+        //                if (e.KeyCode == f.Keys.Left)
+        //                {
+        //                    index--;
+        //                }
+        //                else if (e.KeyCode == f.Keys.Right)
+        //                {
+        //                    index++;
+        //                }
 
-//                if (index< 0) index = 0;
+        //                if (index< 0) index = 0;
 
-//                lvClip.SelectedIndex = index;
-
-
-//                ((ListViewItem) lvClip.SelectedItem)?.Focus();
-//                if (this.IsVisible) e.Handled = true;
-//}
+        //                lvClip.SelectedIndex = index;
 
 
-//            if ((e.KeyCode == f.Keys.C && e.Control ||
-//                 e.KeyCode == f.Keys.Space ||
-//                 e.KeyCode == f.Keys.Return))
-//            {
-//                SetClipboard(lvClip.SelectedItem);
-//            }
-//            else if (e.KeyCode == f.Keys.Delete)
-//            {
-//                LastIndex = lvClip.SelectedIndex;
+        //                ((ListViewItem) lvClip.SelectedItem)?.Focus();
+        //                if (this.IsVisible) e.Handled = true;
+        //}
 
-//                if (lvClip.SelectedItem is ClipItem itm)
-//                {
-//                    itemDB.Remove(itm.Id);
-//                }
 
-//                lvClip.Items.Remove(lvClip.SelectedItem);
+        //            if ((e.KeyCode == f.Keys.C && e.Control ||
+        //                 e.KeyCode == f.Keys.Space ||
+        //                 e.KeyCode == f.Keys.Return))
+        //            {
+        //                SetClipboard(lvClip.SelectedItem);
+        //            }
+        //            else if (e.KeyCode == f.Keys.Delete)
+        //            {
+        //                LastIndex = lvClip.SelectedIndex;
 
-//                LastFormat = ClipboardFormat.None;
-//                LastImage = null;
-//                LastStrArr = null;
-//                LastText = "";
-//            }
+        //                if (lvClip.SelectedItem is ClipItem itm)
+        //                {
+        //                    itemDB.Remove(itm.Id);
+        //                }
+
+        //                lvClip.Items.Remove(lvClip.SelectedItem);
+
+        //                LastFormat = ClipboardFormat.None;
+        //                LastImage = null;
+        //                LastStrArr = null;
+        //                LastText = "";
+        //            }
 
 
 
@@ -523,6 +697,15 @@ namespace ReClip
                 if (string.IsNullOrEmpty(stringItem.Text))
                     return;
                 WinClipboard.SetText(stringItem.Text);
+            }
+            else if (item is FileClipItem fileItem)
+            {
+                Handled = true;
+
+                StringCollection coll = new StringCollection();
+                coll.AddRange(fileItem.FilePaths);
+
+                WinClipboard.SetFileDropList(coll);
             }
             else
             {
@@ -573,7 +756,7 @@ namespace ReClip
             oAnim.EasingFunction = new CircleEase();
             tAnim.EasingFunction = new CircleEase();
 
-            
+
             this.BeginAnimation(OpacityProperty, oAnim);
             this.BeginAnimation(TopProperty, tAnim);
         }
@@ -610,7 +793,7 @@ namespace ReClip
                 if (lvClip.Items.Count > 0) (lvClip.SelectedItem as ListViewItem)?.Focus();
             }
         }
-        
+
         public void Disappear()
         {
             if (FrmClosing) return;
@@ -633,7 +816,7 @@ namespace ReClip
 
             oAnim.EasingFunction = new CircleEase();
             tAnim.EasingFunction = new CircleEase();
-            
+
             this.BeginAnimation(OpacityProperty, oAnim);
             this.BeginAnimation(TopProperty, tAnim);
 
@@ -699,7 +882,7 @@ namespace ReClip
                 DataObject dragData = new DataObject(typestring, setData);
                 try { DragDrop.DoDragDrop(listViewItem, dragData, DragDropEffects.Copy); }
                 catch (Exception) { }
-                
+
             }
         }
 
@@ -719,6 +902,7 @@ namespace ReClip
 
         System.Windows.Point startPoint;
 
+        
         private void ClipListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             startPoint = e.GetPosition(null);
@@ -730,7 +914,7 @@ namespace ReClip
         public void SetWindow()
         {
             var point = f.Control.MousePosition;
-            
+
             foreach (var screen in f.Screen.AllScreens)
             {
                 if (screen.Bounds.Contains(point))
@@ -738,7 +922,7 @@ namespace ReClip
                     this.Left = screen.Bounds.Left;
 
                     LastTop = screen.Bounds.Height - 60 - this.Height + screen.Bounds.Top;
-                    this.Top = LastTop; 
+                    this.Top = LastTop;
 
                     this.Width = screen.Bounds.Width;
                 }
