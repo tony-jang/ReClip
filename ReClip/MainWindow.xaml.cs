@@ -22,6 +22,7 @@ using ReClip.Setting;
 using ReClip.Database;
 using ReClip.Clips;
 using ReClip.Windows;
+using ReClip.HotKey;
 
 using Gma.System.MouseKeyHook;
 
@@ -29,7 +30,6 @@ using f = System.Windows.Forms;
 using WinClipboard = System.Windows.Forms.Clipboard;
 using WinBitmap = System.Drawing.Bitmap;
 using BitmapDB = ReClip.Database.BitmapCache;
-using ReClip.HotKey;
 
 namespace ReClip
 {
@@ -61,7 +61,6 @@ namespace ReClip
 
 
             this.Loaded += MainWindow_Loaded;
-            this.PreviewKeyDown += MainWindow_KeyDown;
             this.Closing += MainWindow_Closing;
 
             SetWindow();
@@ -331,7 +330,6 @@ namespace ReClip
 
             if (HandleAdd)
             {
-                Item.KeyDown += Itm_KeyDown;
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
@@ -390,7 +388,7 @@ namespace ReClip
 
             itms[0].Click += delegate (object o, EventArgs e) { new VersionWindow().ShowDialog(); };
 
-            itms[1].Click += delegate (object o, EventArgs e) { new SettingWindow(EnvironmentSetting.Default).ShowDialog(); };
+            itms[1].Click += delegate (object o, EventArgs e) { settingdb.SetSetting(new SettingWindow(settingdb.GetSetting()).ShowDialog()); };
 
             itms[2].Click += delegate (object o, EventArgs e) { Environment.Exit(0); };
 
@@ -431,21 +429,10 @@ namespace ReClip
         #endregion
 
         #region [  KeyDown Event  ]
-
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
-
-        private void Itm_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
-
+        
         //int Counter = 0;
 
-        OpenState process = OpenState.None;
+        
 
 
         #endregion
@@ -566,7 +553,6 @@ namespace ReClip
                 {
                     try
                     {
-                        Item.KeyDown += Itm_KeyDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                     }
                     catch (Exception) { }
@@ -585,98 +571,6 @@ namespace ReClip
 
             LastFormat = format;
         }
-
-
-
-        //        if (e.Alt)
-        //            {
-        //                process = OpenState.None;
-        //                switch (e.KeyCode)
-        //                {
-        //                    case f.Keys.Left:
-        //                        process = OpenState.MoveLeft;
-        //                        break;
-        //                    case f.Keys.Right:
-        //                        process = OpenState.MoveRight;
-        //                        break;
-        //                    case f.Keys.Up:
-        //                        process = OpenState.General;
-        //                        break;
-        //                }
-        //                if (process == OpenState.None) return;
-
-        //                e.SuppressKeyPress = true;
-        //                Application.Current.Dispatcher.Invoke(() =>
-        //                {
-        //                    if (this.Visibility == Visibility.Hidden)
-        //                    {
-        //        this.Show();
-        //        SetWindow();
-        //        Appear();
-        //    }
-        //    });
-        //            }
-        //            if (e.KeyCode == f.Keys.Escape)
-        //            {
-        //                Application.Current.Dispatcher.Invoke(() => { Disappear(); });
-        //            }
-        //            else if (e.KeyCode == f.Keys.Down && e.Alt)
-        //            {
-        //                Disappear();
-        //            }
-        //            else if (e.KeyCode == f.Keys.S && e.Control)
-        //            {
-        //                SettingWindow sw = new SettingWindow(settingdb.GetSetting());
-        //settingdb.SetSetting(sw.ShowDialog());
-        //            }
-        //            else if (e.KeyCode == f.Keys.Left || e.KeyCode == f.Keys.Right)
-        //            {
-        //                int index = lvClip.SelectedIndex;
-
-        //                if (e.KeyCode == f.Keys.Left)
-        //                {
-        //                    index--;
-        //                }
-        //                else if (e.KeyCode == f.Keys.Right)
-        //                {
-        //                    index++;
-        //                }
-
-        //                if (index< 0) index = 0;
-
-        //                lvClip.SelectedIndex = index;
-
-
-        //                ((ListViewItem) lvClip.SelectedItem)?.Focus();
-        //                if (this.IsVisible) e.Handled = true;
-        //}
-
-
-        //            if ((e.KeyCode == f.Keys.C && e.Control ||
-        //                 e.KeyCode == f.Keys.Space ||
-        //                 e.KeyCode == f.Keys.Return))
-        //            {
-        //                SetClipboard(lvClip.SelectedItem);
-        //            }
-        //            else if (e.KeyCode == f.Keys.Delete)
-        //            {
-        //                LastIndex = lvClip.SelectedIndex;
-
-        //                if (lvClip.SelectedItem is ClipItem itm)
-        //                {
-        //                    itemDB.Remove(itm.Id);
-        //                }
-
-        //                lvClip.Items.Remove(lvClip.SelectedItem);
-
-        //                LastFormat = ClipboardFormat.None;
-        //                LastImage = null;
-        //                LastStrArr = null;
-        //                LastText = "";
-        //            }
-
-
-
 
         public void SetClipboard(object sender)
         {
@@ -760,6 +654,8 @@ namespace ReClip
             this.BeginAnimation(OpacityProperty, oAnim);
             this.BeginAnimation(TopProperty, tAnim);
         }
+
+        OpenState process = OpenState.None;
 
         private void Appear_Comp(object sender, EventArgs e)
         {
