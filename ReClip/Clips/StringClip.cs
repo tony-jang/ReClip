@@ -14,7 +14,7 @@ namespace ReClip.Clips
         {
         }
 
-        public StringClip(string Data, long Key)
+        public StringClip(string Data, long Key) : this()
         {
             this.Data = Data;
             Id = Key;
@@ -22,6 +22,7 @@ namespace ReClip.Clips
 
         public StringClip()
         {
+            this.date = DateTime.Now;
             _data = "";
         }
 
@@ -30,5 +31,6 @@ namespace ReClip.Clips
         private string _data;
         public string Data { get => _data; set => _data = value; }
         public long Id { get; set; }
+        public DateTime date { get; set; }
     }
 }

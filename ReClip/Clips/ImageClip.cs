@@ -15,18 +15,20 @@ namespace ReClip.Clips
         {
         }
 
-        public ImageClip(uint CRC32, long Key)
+        public ImageClip(uint CRC32, long Key) : this()
         {
             this.CRC32 = CRC32;
-
             Id = Key;
         }
 
         public ImageClip()
         {
+            this.date = DateTime.Now;
         }
+
         public uint CRC32 { get; set; }
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public long Id { get; set; }
+        public DateTime date { get; set; }
     }
 }

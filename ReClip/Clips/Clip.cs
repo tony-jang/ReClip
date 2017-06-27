@@ -13,5 +13,6 @@ namespace ReClip.Clips
         [BsonId]
         long Id { get; set; }
         ClipboardFormat Format { get; }
+        DateTime date { get; set; }
     }
 }

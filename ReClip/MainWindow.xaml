@@ -22,8 +22,8 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Background="#4C000000" HorizontalAlignment="Center">
-            <Grid Margin="10" HorizontalAlignment="Center">
+        <Grid x:Name="gridPreview" Background="#72000000" HorizontalAlignment="Center">
+            <Grid Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
@@ -34,18 +34,18 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Margin="5" TextAlignment="Center">
-                    형식 : <Run Text="Text"/>
+                    형식 : <Run x:Name="runFormat" Text="Text"/>
                 </TextBlock>
                 <TextBlock Margin="5" Grid.Column="1" TextAlignment="Center">
-                    저장된 시간 : <Run Text="170614 00:00:00"/>
+                    저장된 시간 : <Run x:Name="runSaveTime" Text="170614 00:00:00"/>
                 </TextBlock>
-                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" VerticalAlignment="Center">
-                    Format이 Text가 아니라면 Preview를 사용 할 수 없습니다.
+                <TextBlock x:Name="tbPreviewText" Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" 
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap"> 
                 </TextBlock>
             </Grid>
         </Grid>
         
-        <Grid Grid.Row="1" Background="#4C000000">
+        <Grid Grid.Row="1" Background="#72000000">
             <!--<TextBlock x:Name="TBName" Text="asdf" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
             <ListView
             x:Name="lvClip"
