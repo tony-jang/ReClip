@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+
+using ReClip.Interop;
 
 using WSEX = ReClip.Interop.NativeMethods.WS_EX;
 using WS = ReClip.Interop.NativeMethods.WS;
 using GWL = ReClip.Interop.NativeMethods.GWL;
-using System.Windows;
-using ReClip.Interop;
-using System.Windows.Forms;
-using System.Windows.Interop;
 
 namespace ReClip.Windows
 {

@@ -12,58 +12,69 @@
     Height="250"
     AllowsTransparency="True"
     Background="{x:Null}"
-    ShowInTaskbar="False"
     Foreground="White"
+    ShowInTaskbar="False"
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition/>
+            <RowDefinition Height="100" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="10"/>
+                <RowDefinition />
+                <RowDefinition Height="10" />
             </Grid.RowDefinitions>
-            <Grid x:Name="infoUpper" Background="#7F000000" Margin="0,0,0,0" HorizontalAlignment="Left" Width="270">
+            <Grid
+                x:Name="infoUpper"
+                Width="270"
+                Margin="0,0,0,0"
+                HorizontalAlignment="Left"
+                Background="#7F000000">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-
                     <TextBlock Margin="5" TextAlignment="Center">
-                    형식 : <Run x:Name="runFormat" Text="Text"/>
+                        시간 :<Run x:Name="runSaveTime" Text="-" />
                     </TextBlock>
-                    <TextBlock Margin="5" Grid.Column="1" TextAlignment="Center">
-                    저장된 시간 : <Run x:Name="runSaveTime" Text="-"/>
-                    </TextBlock>
-                    <TextBlock x:Name="tbPreviewText" Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" 
-                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap">
+                    <TextBlock
+                        x:Name="tbPreviewText"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        VerticalAlignment="Center"
+                        TextAlignment="Center"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap">
                     </TextBlock>
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
-                <Polyline x:Name="infoLower" Points="5 10 0 0 10 0 10 0" HorizontalAlignment="Left" Fill="#7F000000" Margin="200,0"/>
+                <Polyline
+                    x:Name="infoLower"
+                    Margin="200,0"
+                    HorizontalAlignment="Left"
+                    Fill="#7F000000"
+                    Points="5 10 0 0 10 0 10 0" />
             </Grid>
         </Grid>
-        
-        
+
+
         <Grid Grid.Row="1" Background="#72000000">
             <!--<TextBlock x:Name="TBName" Text="asdf" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
             <ListView
-            x:Name="lvClip"
-            HorizontalAlignment="Center"
-            Background="{x:Null}"
-            BorderBrush="{x:Null}"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-            Style="{DynamicResource ListViewStyle1}">
+                x:Name="lvClip"
+                HorizontalAlignment="Center"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                Style="{DynamicResource ListViewStyle1}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -72,11 +83,11 @@
                 <!--<c:StringClipItem Text="Test Long Text!!!!!!!"/>-->
             </ListView>
             <TextBlock
-            x:Name="TBInfo"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Foreground="White"
-            Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다." />
+                x:Name="TBInfo"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="White"
+                Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다." />
             <!--<TextBlock x:Name="debugtb" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Foreground="White"/>-->
         </Grid>
     </Grid>

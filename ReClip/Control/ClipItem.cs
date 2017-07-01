@@ -14,5 +14,6 @@ namespace ReClip.Control
         public abstract void ShowComplete();
 
         public long Id { get; set; }
+        public DateTime Time { get; set; }
     }
 }

@@ -23,12 +23,12 @@ namespace ReClip.Clips
 
         public ImageClip()
         {
-            this.date = DateTime.Now;
+            this.Time = DateTime.Now;
         }
 
         public uint CRC32 { get; set; }
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public long Id { get; set; }
-        public DateTime date { get; set; }
+        public DateTime Time { get; set; }
     }
 }

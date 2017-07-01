@@ -45,9 +45,6 @@ namespace ReClip
             InitializeHotKeys();
             InitializeNotifyIcon();
 
-
-            
-
             Clipboard.Clear();
 
             ClipboardMonitor.Start();
@@ -171,6 +168,22 @@ namespace ReClip
             HotKeyManager.AddHotKey(
                 new HotKeyData()
                 {
+                    Name = "MoveUp",
+
+                    Key = f.Keys.Up,
+                    Action = Act_Prevent
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "MoveDown",
+
+                    Key = f.Keys.Down,
+                    Action = Act_Prevent
+                });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
                     Name = "DelItem",
 
                     Key = f.Keys.Delete,
@@ -203,6 +216,12 @@ namespace ReClip
                     Key = f.Keys.D,
                     Action = Act_Debug
                 });
+        }
+
+        private void Act_Prevent(HotKeyData obj)
+        {
+            if (this.IsVisible)
+                obj.Prevent = true;
         }
 
         private void Act_Debug(HotKeyData obj)
@@ -275,8 +294,16 @@ namespace ReClip
             int index = lvClip.SelectedIndex - 1;
 
             if (index < 0) index = 0;
+            
+            int lastIndex = lvClip.SelectedIndex;
 
             lvClip.SelectedIndex = index;
+        
+            if (lastIndex == lvClip.SelectedIndex)
+            {
+                ClipListView_SelectionChanged(lvClip.SelectedItem, null);
+            }
+
             ChangeFormatText();
 
             ((ListViewItem)lvClip.SelectedItem)?.Focus();
@@ -285,17 +312,22 @@ namespace ReClip
 
         public void ChangeFormatText()
         {
-            if (lvClip.SelectedItem is StringClipItem strItem)
+            //if (lvClip.SelectedItem is StringClipItem strItem)
+            //{
+            //    runFormat.Text = "텍스트";
+            //}
+            //else if (lvClip.SelectedItem is FileClipItem fileItem)
+            //{
+            //    runFormat.Text = "파일 목록";
+            //}
+            //else if (lvClip.SelectedItem is ImageClipItem imgItem)
+            //{
+            //    runFormat.Text = "이미지";
+            //}
+
+            if (lvClip.SelectedItem is ClipItem clipitem)
             {
-                runFormat.Text = "텍스트";
-            }
-            else if (lvClip.SelectedItem is FileClipItem fileItem)
-            {
-                runFormat.Text = "파일 목록";
-            }
-            else if (lvClip.SelectedItem is ImageClipItem imgItem)
-            {
-                runFormat.Text = "이미지";
+                SetDate(clipitem.Time);
             }
         }
 
@@ -358,13 +390,21 @@ namespace ReClip
             ClipItem Item = null;
             if (clip is StringClip strClip)
             {
-                Item = new StringClipItem(strClip.Data) { Id = strClip.Id };
+                Item = new StringClipItem(strClip.Data)
+                {
+                    Id = strClip.Id,
+                    Time = strClip.Time
+                };
             }
             else if (clip is ImageClip ImgClip)
             {
                 try
                 {
-                    Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(), ImgClip.CRC32) { Id = ImgClip.Id };
+                    Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(), ImgClip.CRC32)
+                    {
+                        Id = ImgClip.Id,
+                        Time = ImgClip.Time
+                    };
                 }
                 catch (Exception)
                 {
@@ -375,7 +415,10 @@ namespace ReClip
             {
                 try
                 {
-                    Item = new FileClipItem(fileClip.Data) { Id = fileClip.Id };
+                    Item = new FileClipItem(fileClip.Data) {
+                        Id = fileClip.Id,
+                        Time = fileClip.Time
+                    };
                 }
                 catch (Exception)
                 {
@@ -393,6 +436,7 @@ namespace ReClip
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
+                lvClip.SelectedItem = Item;
             }
         }
 
@@ -525,9 +569,8 @@ namespace ReClip
                 thick2.Left = 0;
             else if ((thick2.Left + infoUpper.Width > this.Width))
                 thick2.Left = this.Width - infoUpper.Width + (this.Width - lvClip.ActualWidth) / 2;
+
             infoUpper.Margin = thick2;
-
-
         }
 
 
@@ -536,12 +579,12 @@ namespace ReClip
 
         private void ClipboardMonitor_OnClipboardChange(ClipboardFormat format, object data)
         {
-            var CurrentSetting = settingdb.GetSetting();
-            if (!CurrentSetting.ClipboardSaveEnable) return;
+            var currentSetting = settingdb.GetSetting();
+            if (!currentSetting.ClipboardSaveEnable) return;
 
-            if ((CurrentSetting.ExceptFileItem && format == ClipboardFormat.FileDrop) ||
-                (CurrentSetting.ExceptImageItem && format == ClipboardFormat.Bitmap) ||
-                (CurrentSetting.ExceptTextItem && format == ClipboardFormat.Text)) return;
+            if ((currentSetting.ExceptFileItem && format == ClipboardFormat.FileDrop) ||
+                (currentSetting.ExceptImageItem && format == ClipboardFormat.Bitmap) ||
+                (currentSetting.ExceptTextItem && format == ClipboardFormat.Text)) return;
 
             if (!handled)
             {
@@ -559,9 +602,7 @@ namespace ReClip
                         if (string.IsNullOrEmpty(text)) return;
                         Item = new StringClipItem(text);
                         Item.Id = Key;
-
-                        lvClip.Items.Add(Item);
-
+                        
                         itemDB.Add(new StringClip(text, Key));
 
                         lastText = text;
@@ -590,7 +631,7 @@ namespace ReClip
 
                         itemDB.Add(new ImageClip(crc32, Key));
 
-                        lvClip.Items.Add(Item);
+                        
                         lastImage = thumbnail;
                     }
                 }
@@ -605,7 +646,6 @@ namespace ReClip
                             Item = new FileClipItem(files);
                             Item.Id = Key;
 
-                            lvClip.Items.Add(Item);
                             var itm = new FileClip(files, Key);
 
                             itemDB.Add(itm);
@@ -624,6 +664,9 @@ namespace ReClip
                     try
                     {
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
+                        Item.Time = DateTime.Now;
+                        lvClip.Items.Add(Item);
+                        lvClip.SelectedItem = Item;
                     }
                     catch (Exception) { }
                 }
@@ -896,9 +939,9 @@ namespace ReClip
             }
         }
 
-        public void SetDate()
+        public void SetDate(DateTime time)
         {
-            var date = DateTime.Now;
+            runSaveTime.Text = time.ToString();
         }
     }
 
