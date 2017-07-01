@@ -44,7 +44,7 @@ namespace ReClip
             InitializeComponent();
             InitializeHotKeys();
             InitializeNotifyIcon();
-            
+
 
             
 
@@ -80,6 +80,12 @@ namespace ReClip
             hook.MouseDown += Hook_MouseDown;
             hook.MouseUp += Hook_MouseUp;
             hook.KeyDown += Hook_KeyDown;
+            this.PreviewMouseDown += MainWindow_MouseDown;
+        }
+        bool WindowClicked = false;
+        private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            WindowClicked = true;
         }
 
         private void Hook_KeyDown(object sender, f.KeyEventArgs e)
@@ -108,8 +114,9 @@ namespace ReClip
 
         private void Hook_MouseUp(object sender, f.MouseEventArgs e)
         {
-            if (this.IsVisible)
+            if (this.IsVisible && !WindowClicked)
                 Disappear();
+            WindowClicked = false;
         }
 
         private void Hook_MouseDown(object sender, f.MouseEventArgs e)
@@ -187,6 +194,22 @@ namespace ReClip
                     Key = f.Keys.V,
                     Action = Act_Paste
                 });
+            HotKeyManager.AddHotKey(
+                new HotKeyData()
+                {
+                    Name = "",
+                    Control = true,
+                    
+                    Key = f.Keys.D,
+                    Action = Act_Debug
+                });
+        }
+
+        private void Act_Debug(HotKeyData obj)
+        {
+            obj.Prevent = true;
+            GetCurrentOffset();
+            
         }
 
         private void Act_Paste(HotKeyData obj)
@@ -323,7 +346,6 @@ namespace ReClip
 
         private void InitializeItem()
         {
-            
             foreach (Clip clip in itemDB.GetAllItem())
             {
                 AddClip(clip);
@@ -367,13 +389,23 @@ namespace ReClip
             
             if (HandleAdd)
             {
+                Item.PreviewMouseDown += Item_MouseDown;
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
             }
         }
 
-
+        private void Item_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is System.Windows.Controls.Control ctrl)
+            {
+                if (ctrl.Parent is ListView lv)
+                {
+                    lv.SelectedItem = ctrl;
+                }
+            }            
+        }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -475,16 +507,27 @@ namespace ReClip
 
             var viewer = lvClip.GetDescendantByType(typeof(AniScrollViewer)) as AniScrollViewer;
 
-            if (scrollOffset > 0)
-            {
-                if (viewer.ScrollableWidth < scrollOffset)
-                    scrollOffset = (int)viewer.ScrollableWidth;
-                viewer.ScrollToPosition(scrollOffset);
-            }
-            else
-            {
-                viewer.ScrollToPosition(0);
-            }
+            if (viewer.ScrollableWidth < scrollOffset)
+                scrollOffset = (int)viewer.ScrollableWidth;
+            else if (scrollOffset < 0)
+                scrollOffset = 0;
+            int differ = (int)viewer.HorizontalOffset - scrollOffset; 
+
+            viewer.ScrollToPosition(scrollOffset);
+
+            var thick = infoLower.Margin;
+            thick.Left = GetCurrentOffset() + differ + (this.Width - lvClip.ActualWidth) / 2;
+            infoLower.Margin = thick;
+
+            var thick2 = infoUpper.Margin;
+            thick2.Left = GetCurrentOffset() + differ - infoUpper.ActualWidth / 2 + (this.Width - lvClip.ActualWidth) / 2;
+            if (thick2.Left < 0)
+                thick2.Left = 0;
+            else if ((thick2.Left + infoUpper.Width > this.Width))
+                thick2.Left = this.Width - infoUpper.Width + (this.Width - lvClip.ActualWidth) / 2;
+            infoUpper.Margin = thick2;
+
+
         }
 
 
@@ -803,6 +846,16 @@ namespace ReClip
             }
         }
 
+        public double GetCurrentOffset()
+        {
+            double offset = ((lvClip.SelectedIndex + 1) * 140) - 70;
+            var viewer = lvClip.GetDescendantByType(typeof(AniScrollViewer)) as AniScrollViewer;
+
+            double finalOffset = offset - viewer.HorizontalOffset;
+
+            return finalOffset;
+        }
+
         private static T FindAnchestor<T>(DependencyObject current) where T : DependencyObject
         {
             do
@@ -841,7 +894,6 @@ namespace ReClip
                     this.Width = screen.Bounds.Width;
                 }
             }
-            gridPreview.Width = this.Width * 0.6;
         }
 
         public void SetDate()

@@ -22,28 +22,38 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid x:Name="gridPreview" Background="#72000000" HorizontalAlignment="Center">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+            <Grid x:Name="infoUpper" Background="#7F000000" Margin="0,0,0,0" HorizontalAlignment="Left" Width="270">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
-                <TextBlock Margin="5" TextAlignment="Center">
+                    <TextBlock Margin="5" TextAlignment="Center">
                     형식 : <Run x:Name="runFormat" Text="Text"/>
-                </TextBlock>
-                <TextBlock Margin="5" Grid.Column="1" TextAlignment="Center">
-                    저장된 시간 : <Run x:Name="runSaveTime" Text="170614 00:00:00"/>
-                </TextBlock>
-                <TextBlock x:Name="tbPreviewText" Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" 
-                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap"> 
-                </TextBlock>
+                    </TextBlock>
+                    <TextBlock Margin="5" Grid.Column="1" TextAlignment="Center">
+                    저장된 시간 : <Run x:Name="runSaveTime" Text="-"/>
+                    </TextBlock>
+                    <TextBlock x:Name="tbPreviewText" Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" 
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="Wrap">
+                    </TextBlock>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Polyline x:Name="infoLower" Points="5 10 0 0 10 0 10 0" HorizontalAlignment="Left" Fill="#7F000000" Margin="200,0"/>
             </Grid>
         </Grid>
+        
         
         <Grid Grid.Row="1" Background="#72000000">
             <!--<TextBlock x:Name="TBName" Text="asdf" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left"/>-->
