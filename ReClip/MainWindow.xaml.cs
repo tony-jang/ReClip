@@ -30,6 +30,7 @@ using f = System.Windows.Forms;
 using WinClipboard = System.Windows.Forms.Clipboard;
 using WinBitmap = System.Drawing.Bitmap;
 using BitmapDB = ReClip.Database.BitmapCache;
+using System.IO;
 
 namespace ReClip
 {
@@ -45,6 +46,8 @@ namespace ReClip
             InitializeHotKeys();
             InitializeNotifyIcon();
 
+            HideInfoBalloon();
+
             Clipboard.Clear();
 
             ClipboardMonitor.Start();
@@ -56,8 +59,7 @@ namespace ReClip
             lvClip.SelectionChanged += ClipListView_SelectionChanged;
             lvClip.PreviewMouseLeftButtonDown += ClipListView_PreviewMouseLeftButtonDown;
             lvClip.MouseMove += ClipListView_MouseMove;
-
-
+            
             this.Loaded += MainWindow_Loaded;
             this.Closing += MainWindow_Closing;
 
@@ -72,7 +74,6 @@ namespace ReClip
             {
                 ClipboardMonitor.Stop();
             };
-            
             
             hook.MouseDown += Hook_MouseDown;
             hook.MouseUp += Hook_MouseUp;
@@ -118,7 +119,6 @@ namespace ReClip
 
         private void Hook_MouseDown(object sender, f.MouseEventArgs e)
         {
-            
         }
 
         private void InitializeHotKeys()
@@ -227,8 +227,6 @@ namespace ReClip
         private void Act_Debug(HotKeyData obj)
         {
             obj.Prevent = true;
-            GetCurrentOffset();
-            
         }
 
         private void Act_Paste(HotKeyData obj)
@@ -280,8 +278,7 @@ namespace ReClip
             int index = lvClip.SelectedIndex + 1;
 
             lvClip.SelectedIndex = index;
-            ChangeFormatText();
-
+            
             ((ListViewItem)lvClip.SelectedItem)?.Focus();
             data.Prevent = true;
         }
@@ -304,26 +301,39 @@ namespace ReClip
                 ClipListView_SelectionChanged(lvClip.SelectedItem, null);
             }
 
-            ChangeFormatText();
-
             ((ListViewItem)lvClip.SelectedItem)?.Focus();
             data.Prevent = true;
         }
 
         public void ChangeFormatText()
         {
-            //if (lvClip.SelectedItem is StringClipItem strItem)
-            //{
-            //    runFormat.Text = "텍스트";
-            //}
-            //else if (lvClip.SelectedItem is FileClipItem fileItem)
-            //{
-            //    runFormat.Text = "파일 목록";
-            //}
-            //else if (lvClip.SelectedItem is ImageClipItem imgItem)
-            //{
-            //    runFormat.Text = "이미지";
-            //}
+            var itm = lvClip.SelectedItem;
+
+            if (itm is StringClipItem strItm)
+            {
+                tbPreviewText.Visibility = Visibility.Visible;
+                tbPreviewImage.Visibility = Visibility.Hidden;
+                string txt = strItm.Text.Replace(Environment.NewLine, " ");
+                if (strItm.Text.Length > 200)
+                {
+                    txt = txt.Substring(0, 200);
+                }                
+
+                tbPreviewText.Text = txt;
+            }
+            else if (itm is FileClipItem fileItm)
+            {
+                tbPreviewText.Visibility = Visibility.Visible;
+                tbPreviewImage.Visibility = Visibility.Hidden;
+                tbPreviewText.Text = string.Join(Environment.NewLine, fileItm.FilePaths.Select(i => new FileInfo(i).Name));
+            }
+            else if (itm is ImageClipItem imgItm)
+            {
+                tbPreviewText.Visibility = Visibility.Hidden;
+                tbPreviewImage.Visibility = Visibility.Visible;
+                tbPreviewImage.Source = imgItm.Source;
+                
+            }
 
             if (lvClip.SelectedItem is ClipItem clipitem)
             {
@@ -432,7 +442,7 @@ namespace ReClip
             
             if (HandleAdd)
             {
-                Item.PreviewMouseDown += Item_MouseDown;
+                Item.PreviewMouseDown += Itm_MouseDown;
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
@@ -440,7 +450,7 @@ namespace ReClip
             }
         }
 
-        private void Item_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Itm_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is System.Windows.Controls.Control ctrl)
             {
@@ -477,10 +487,19 @@ namespace ReClip
             {
                 lvClip.SelectedIndex = 0;
             }
-
-            //this.Activate();
         }
 
+        public void HideInfoBalloon()
+        {
+            infoLower.Visibility = Visibility.Hidden;
+            infoUpper.Visibility = Visibility.Hidden;
+        }
+
+        public void VisibleInfoBalloon()
+        {
+            infoLower.Visibility = Visibility.Visible;
+            infoUpper.Visibility = Visibility.Visible;
+        }
 
         #region [  Initalize NotifyIcon  ]
 
@@ -542,7 +561,11 @@ namespace ReClip
         private void ClipListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = lvClip.Items.IndexOf(lvClip.SelectedItem);
-            if (index == -1) return;
+            if (index == -1)
+            {
+                HideInfoBalloon();
+                return;
+            }
 
             int itmWidth = 120 + 20;
             int allWidth = lvClip.Items.Count * itmWidth;
@@ -558,19 +581,27 @@ namespace ReClip
             int differ = (int)viewer.HorizontalOffset - scrollOffset; 
 
             viewer.ScrollToPosition(scrollOffset);
+            
+            if (this.IsVisible)
+            {
+                VisibleInfoBalloon();
 
-            var thick = infoLower.Margin;
-            thick.Left = GetCurrentOffset() + differ + (this.Width - lvClip.ActualWidth) / 2;
-            infoLower.Margin = thick;
+                var thick = infoLower.Margin;
+                thick.Left = GetCurrentOffset() + differ + (this.Width - lvClip.ActualWidth) / 2;
+                infoLower.Margin = thick;
 
-            var thick2 = infoUpper.Margin;
-            thick2.Left = GetCurrentOffset() + differ - infoUpper.ActualWidth / 2 + (this.Width - lvClip.ActualWidth) / 2;
-            if (thick2.Left < 0)
-                thick2.Left = 0;
-            else if ((thick2.Left + infoUpper.Width > this.Width))
-                thick2.Left = this.Width - infoUpper.Width + (this.Width - lvClip.ActualWidth) / 2;
+                var thick2 = infoUpper.Margin;
+                thick2.Left = GetCurrentOffset() + differ - infoUpper.ActualWidth / 2 + (this.Width - lvClip.ActualWidth) / 2;
+                if (thick2.Left < 0)
+                    thick2.Left = 0;
+                else if ((thick2.Left + infoUpper.Width > this.Width))
+                    thick2.Left = this.Width - infoUpper.Width + (this.Width - lvClip.ActualWidth) / 2;
 
-            infoUpper.Margin = thick2;
+                infoUpper.Margin = thick2;
+
+                ChangeFormatText();
+            }
+            
         }
 
 
@@ -663,6 +694,7 @@ namespace ReClip
                 {
                     try
                     {
+                        Item.PreviewMouseDown += Itm_MouseDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                         Item.Time = DateTime.Now;
                         lvClip.Items.Add(Item);
@@ -744,6 +776,9 @@ namespace ReClip
         bool FrmOpening = false;
         public void Appear()
         {
+            if (lvClip.Items.Count != 0)
+                VisibleInfoBalloon();
+
             FrmOpening = true;
             DoubleAnimation oAnim = new DoubleAnimation();
             DoubleAnimation tAnim = new DoubleAnimation();
@@ -758,14 +793,14 @@ namespace ReClip
             tAnim.Duration = new Duration(TimeSpan.FromMilliseconds(300));
             oAnim.AccelerationRatio = 1.0;
             tAnim.AccelerationRatio = 1.0;
-
-
+            
             oAnim.EasingFunction = new CircleEase();
             tAnim.EasingFunction = new CircleEase();
-
-
+            
             this.BeginAnimation(OpacityProperty, oAnim);
             this.BeginAnimation(TopProperty, tAnim);
+
+            ClipListView_SelectionChanged(lvClip, null);
         }
 
         OpenState process = OpenState.None;
@@ -804,7 +839,8 @@ namespace ReClip
 
         public void Disappear()
         {
-            if (FrmClosing) return;
+            if (FrmClosing)
+                return;
 
             FrmClosing = true;
             DoubleAnimation oAnim = new DoubleAnimation();
@@ -820,14 +856,14 @@ namespace ReClip
             tAnim.Duration = new Duration(TimeSpan.FromMilliseconds(300));
             oAnim.AccelerationRatio = 1.0;
             tAnim.AccelerationRatio = 1.0;
-
-
+            
             oAnim.EasingFunction = new CircleEase();
             tAnim.EasingFunction = new CircleEase();
 
             this.BeginAnimation(OpacityProperty, oAnim);
             this.BeginAnimation(TopProperty, tAnim);
 
+            HideInfoBalloon();
         }
 
         private void Disappear_Comp(object sender, EventArgs e)
