@@ -57,19 +57,19 @@
                 <GroupBox Header="클립보드 저장" Margin="0,10,0,0">
                     <StackPanel Margin="10">
                         <TextBlock Margin="0,10,0,0">
-                    아이템 갯수가
-                    <ComboBox x:Name="cbSvRecents" Margin="0,-4" SelectedIndex="3" SelectionChanged="cbSvRecents_SelectionChanged">
-                        <ComboBoxItem Content="10"/>
-                        <ComboBoxItem Content="20"/>
-                        <ComboBoxItem Content="30"/>
-                        <ComboBoxItem Content="50"/>
-                        <ComboBoxItem Content="75"/>
-                        <ComboBoxItem Content="100"/>
-                        <ComboBoxItem Content="무제한"/>
-                    </ComboBox> 개 이상이라면 삭제
+                            아이템 갯수가
+                            <ComboBox x:Name="cbSvRecents" Margin="0,-4" SelectedIndex="3" SelectionChanged="cbSvRecents_SelectionChanged">
+                                <ComboBoxItem Content="10"/>
+                                <ComboBoxItem Content="20"/>
+                                <ComboBoxItem Content="30"/>
+                                <ComboBoxItem Content="50"/>
+                                <ComboBoxItem Content="75"/>
+                                <ComboBoxItem Content="100"/>
+                                <ComboBoxItem Content="무제한"/>
+                            </ComboBox> 개 이상이라면 삭제
                         </TextBlock>
-
-                        <TextBlock Text="다음의 아이템의 경우 저장 제외" Margin="0,12,0,0"/>
+                        <TextBlock Text="※ 가장 오래된 아이템부터 삭제됩니다! 주의 하세요." Foreground="Gray" Margin="0,12,0,0"/>
+                        <TextBlock Text="다음의 아이템의 경우 저장 제외" Margin="0,5,0,0"/>
                         <CheckBox x:Name="cbSaveExceptImg" Content="이미지 아이템"  Margin="0,10,0,0"  Checked="cbSaveExceptImg_Checked"  Unchecked="cbSaveExceptImg_Checked" />
                         <CheckBox x:Name="cbSaveExceptText" Content="텍스트 아이템"  Margin="0,10,0,0" Checked="cbSaveExceptText_Checked" Unchecked="cbSaveExceptText_Checked"/>
                         <CheckBox x:Name="cbSaveExceptFile" Content="파일 아이템"  Margin="0,10,0,0"   Checked="cbSaveExceptFile_Checked" Unchecked="cbSaveExceptFile_Checked"/>

@@ -30,6 +30,7 @@ namespace ReClip.Clips
      
         public ClipboardFormat Format { get => ClipboardFormat.FileDrop; }
         public string[] Data { get; set; }
+        public string PreviewText { get; set; }
         public long Id { get; set; }
         public DateTime Time { get; set; }
     }

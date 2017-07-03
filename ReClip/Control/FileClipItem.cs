@@ -30,6 +30,8 @@ namespace ReClip.Control
             protected set { SetValue(FileNamePropertyKey, value); }
         }
 
+        public string PreviewText { get; set; }
+
         #endregion
 
         #region [  FileIcon Property  ]

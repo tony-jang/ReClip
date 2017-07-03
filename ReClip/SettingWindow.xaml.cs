@@ -200,7 +200,8 @@ namespace ReClip
 
         private void cbThumbnailStretch_Checked(object sender, RoutedEventArgs e)
         {
-            if (Temp != null) Temp.StrectchThumbnail = cbThumbnailStretch.IsChecked.Value;
+            if (Temp != null)
+                Temp.StrectchThumbnail = cbThumbnailStretch.IsChecked.Value;
         }
 
         private void cbSvRecents_SelectionChanged(object sender, SelectionChangedEventArgs e)

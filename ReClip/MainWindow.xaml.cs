@@ -18,7 +18,6 @@ using System.Windows.Media.Animation;
 
 using ReClip.Control;
 using ReClip.Util;
-using ReClip.Setting;
 using ReClip.Database;
 using ReClip.Clips;
 using ReClip.Windows;
@@ -30,16 +29,16 @@ using f = System.Windows.Forms;
 using WinClipboard = System.Windows.Forms.Clipboard;
 using WinBitmap = System.Drawing.Bitmap;
 using BitmapDB = ReClip.Database.BitmapCache;
-using System.IO;
+using ReClip.Setting;
 
 namespace ReClip
 {
-    
-
     public partial class MainWindow : LayeredWindow
     {
         IKeyboardMouseEvents hook = Hook.GlobalEvents();
-        
+
+        bool strectch;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -68,6 +67,7 @@ namespace ReClip
             
             itemDB = new ClipItemData();
             settingdb = new SettingDB();
+            strectch = settingdb.GetSetting().StrectchThumbnail;
             InitializeItem();
 
             this.Closed += (sender, e) =>
@@ -128,7 +128,7 @@ namespace ReClip
                 {
                     Name = "Visible",
 
-                    Alt = true,
+                    Control = true,
                     Key = f.Keys.Up,
                     Action = Act_Appear
                 });
@@ -145,7 +145,7 @@ namespace ReClip
                 {
                     Name = "InVisible2",
 
-                    Alt = true,
+                    Control = true,
                     Key = f.Keys.Down,
                     Action = Act_Disappear
                 });
@@ -257,9 +257,8 @@ namespace ReClip
             LastIndex = lvClip.SelectedIndex;
 
             if (lvClip.SelectedItem is ClipItem itm)
-            {
                 itemDB.Remove(itm.Id);
-            }
+
             lvClip.Items.Remove(lvClip.SelectedItem);
 
             lastFormat = ClipboardFormat.None;
@@ -290,16 +289,15 @@ namespace ReClip
 
             int index = lvClip.SelectedIndex - 1;
 
-            if (index < 0) index = 0;
+            if (index < 0)
+                index = 0;
             
             int lastIndex = lvClip.SelectedIndex;
 
             lvClip.SelectedIndex = index;
         
             if (lastIndex == lvClip.SelectedIndex)
-            {
                 ClipListView_SelectionChanged(lvClip.SelectedItem, null);
-            }
 
             ((ListViewItem)lvClip.SelectedItem)?.Focus();
             data.Prevent = true;
@@ -315,9 +313,7 @@ namespace ReClip
                 tbPreviewImage.Visibility = Visibility.Hidden;
                 string txt = strItm.Text.Replace(Environment.NewLine, " ");
                 if (strItm.Text.Length > 200)
-                {
                     txt = txt.Substring(0, 200);
-                }                
 
                 tbPreviewText.Text = txt;
             }
@@ -325,14 +321,13 @@ namespace ReClip
             {
                 tbPreviewText.Visibility = Visibility.Visible;
                 tbPreviewImage.Visibility = Visibility.Hidden;
-                tbPreviewText.Text = string.Join(Environment.NewLine, fileItm.FilePaths.Select(i => new FileInfo(i).Name));
+                tbPreviewText.Text = fileItm.PreviewText;
             }
             else if (itm is ImageClipItem imgItm)
             {
                 tbPreviewText.Visibility = Visibility.Hidden;
                 tbPreviewImage.Visibility = Visibility.Visible;
                 tbPreviewImage.Source = imgItm.Source;
-                
             }
 
             if (lvClip.SelectedItem is ClipItem clipitem)
@@ -343,7 +338,11 @@ namespace ReClip
 
         public void Act_Appear(HotKeyData data)
         {
-            if (!this.IsVisible) data.Prevent = true;
+            if (!this.IsVisible)
+                data.Prevent = true;
+
+            if (this.IsVisible)
+                return;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -410,7 +409,8 @@ namespace ReClip
             {
                 try
                 {
-                    Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(), ImgClip.CRC32)
+                    //.EnvironmentSetting Strect
+                    Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(strectch), ImgClip.CRC32)
                     {
                         Id = ImgClip.Id,
                         Time = ImgClip.Time
@@ -471,7 +471,7 @@ namespace ReClip
         ClipboardFormat lastFormat = ClipboardFormat.None;
 
         ClipItemData itemDB;
-        SettingDB settingdb;
+        static SettingDB settingdb;
 
         string lastText = null;
         ImageSource lastImage = null;
@@ -644,7 +644,7 @@ namespace ReClip
                     if (data is WinBitmap bmp)
                     {
                         uint crc32 = bmp.GetCRC32();
-                        ImageSource thumbnail = bmp.ToThumbnail();
+                        ImageSource thumbnail = bmp.ToThumbnail(strectch);
 
                         long Key = KeyGenerator.GenerateKey();
                         Item = new ImageClipItem(thumbnail, crc32);
@@ -661,7 +661,6 @@ namespace ReClip
                         BitmapDB.AddBitmap(bmp);
 
                         itemDB.Add(new ImageClip(crc32, Key));
-
                         
                         lastImage = thumbnail;
                     }
@@ -673,12 +672,15 @@ namespace ReClip
                         if (format != lastFormat || !Enumerable.SequenceEqual(lastStrArr, files))
                         {
                             long Key = KeyGenerator.GenerateKey();
-
+                            
                             Item = new FileClipItem(files);
+
+                            string str = string.Join(Environment.NewLine, files.Take(10));
+                            ((FileClipItem)Item).PreviewText = str;
+
                             Item.Id = Key;
 
                             var itm = new FileClip(files, Key);
-
                             itemDB.Add(itm);
 
                             lastStrArr = files;

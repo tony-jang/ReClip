@@ -62,14 +62,24 @@ namespace ReClip.Util
                                                          BitmapSizeOptions.FromWidthAndHeight(bitmap.Width, bitmap.Height));
         }
 
-        public static ImageSource ToThumbnail(this Bitmap bitmap)
+        public static ImageSource ToThumbnail(this Bitmap bitmap, bool stretch)
         {
             BitmapImage image;
             uint crc32 = bitmap.GetCRC32();
 
             if (!bitmapCache.TryGetValue(crc32, out image))
             {
-                var thumbnail = bitmap.GetThumbnailImage(120, 100, null, IntPtr.Zero);
+                Image thumbnail;
+                if (stretch)
+                {
+                    thumbnail = bitmap.GetThumbnailImage(120, 100, null, IntPtr.Zero);
+                }
+                else
+                {
+                    double divValue = bitmap.Width / 120;
+                    thumbnail = bitmap.GetThumbnailImage((int)(bitmap.Width / divValue), (int)(bitmap.Height / divValue), null, IntPtr.Zero);
+                }
+
                 var streamSource = new MemoryStream();
 
                 thumbnail.Save(streamSource, ImageFormat.Png);
