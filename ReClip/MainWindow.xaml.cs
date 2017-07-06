@@ -194,7 +194,7 @@ namespace ReClip
                 {
                     Name = "CopyItem",
 
-                    Alt = true,
+                    Control = true,
                     Key = f.Keys.C,
                     Action = Act_Copy
                 });
@@ -242,7 +242,7 @@ namespace ReClip
         {
             if (!this.IsVisible)
                 return;
-
+    
             SetClipboard(lvClip.SelectedItem);
 
             if (this.IsVisible)
@@ -328,7 +328,10 @@ namespace ReClip
                 tbPreviewText.Visibility = Visibility.Hidden;
                 tbPreviewImage.Visibility = Visibility.Visible;
                 tbPreviewImage.Source = imgItm.Source;
+                
             }
+
+            GC.Collect();
 
             if (lvClip.SelectedItem is ClipItem clipitem)
             {
@@ -409,7 +412,6 @@ namespace ReClip
             {
                 try
                 {
-                    //.EnvironmentSetting Strect
                     Item = new ImageClipItem(BitmapDB.GetBitmapFromCRC32(ImgClip.CRC32).ToThumbnail(strectch), ImgClip.CRC32)
                     {
                         Id = ImgClip.Id,
@@ -513,7 +515,7 @@ namespace ReClip
                                   new f.MenuItem() { Index = 2, Text = "종료"}};
 
             menu.MenuItems.AddRange(itms);
-
+            
             ((INotifyCollectionChanged)lvClip.Items).CollectionChanged += Item_Changed;
 
             itms[0].Click += delegate (object o, EventArgs e) { new VersionWindow().ShowDialog(); };
@@ -601,7 +603,6 @@ namespace ReClip
 
                 ChangeFormatText();
             }
-            
         }
 
 
@@ -644,6 +645,7 @@ namespace ReClip
                     if (data is WinBitmap bmp)
                     {
                         uint crc32 = bmp.GetCRC32();
+                        
                         ImageSource thumbnail = bmp.ToThumbnail(strectch);
 
                         long Key = KeyGenerator.GenerateKey();
@@ -696,6 +698,8 @@ namespace ReClip
                 {
                     try
                     {
+                        //if (settingdb.GetSetting().SaveCount.GetCount() <= lvClip.Items.Count)
+                        //    goto handle;
                         Item.PreviewMouseDown += Itm_MouseDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                         Item.Time = DateTime.Now;
@@ -715,6 +719,8 @@ namespace ReClip
                 handled = false;
                 if (format == ClipboardFormat.Text) lastText = data.ToString();
             }
+
+            handle:
 
             lastFormat = format;
         }

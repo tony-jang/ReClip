@@ -98,12 +98,19 @@ namespace ReClip.Setting
     public enum ItemSaveTypes
     {
         None = 0,
+        [ItemCount(10)]
         Over10Items = 1,
+        [ItemCount(20)]
         Over20Items = 2,
+        [ItemCount(30)]
         Over30Items = 3,
+        [ItemCount(50)]
         Over50Items = 4,
+        [ItemCount(75)]
         Over75Items = 5,
+        [ItemCount(100)]
         Over100Items = 6,
+        [ItemCount(-1)]
         InitifiteItems = 20,
     }
 }

@@ -95,7 +95,9 @@
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Setting\EnvironmentSetting.cs" />
+    <Compile Include="Setting\ItemCountAttribute.cs" />
     <Compile Include="Util\BitmapImageEx.cs" />
+    <Compile Include="Util\EnumEx.cs" />
     <Compile Include="Util\VisualEx.cs" />
     <Compile Include="Util\IconUtilities.cs" />
     <Compile Include="VersionWindow.xaml.cs">
