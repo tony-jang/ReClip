@@ -16,29 +16,30 @@ namespace ReClip
     /// </summary>
     public partial class App : Application
     {
-        private Mutex _mutex;
-
+        Mutex mutex;
         protected override void OnStartup(StartupEventArgs e)
         {
-            bool isNew = true;
-            Mutex mutex = new Mutex(true, "ReClip", out isNew);
+            string mutexName = "Re:Clip";
 
-            if (isNew == false)
+            try
             {
+                mutex = new Mutex(false, mutexName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
                 Environment.Exit(0);
-                // 중복실행시 처리
+            }
+
+            if (mutex.WaitOne(0, false))
+            {
+                base.OnStartup(e);
             }
             else
             {
-                // 실행
-                mutex.ReleaseMutex();
-
-                BitmapCache.Open();
-
-                base.OnStartup(e);
+                MessageBox.Show("Re:Clip은 이미 동작중입니다.");
+                Environment.Exit(0);
             }
-
-            
         }
     }
 }

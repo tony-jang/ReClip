@@ -64,6 +64,26 @@
                     Fill="#7F000000"
                     Points="5 10 0 0 10 0 10 0" />
             </Grid>
+            <Grid x:Name="infoBalloon" VerticalAlignment="Bottom" HorizontalAlignment="Center" MouseDown="infoBalloon_MouseDown">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Background="Gray"/>
+                <TextBlock Margin="15">
+                    Ctrl + ↑키로 Re:Clip을 띄웁니다.
+                    <LineBreak/>
+                    Ctrl + ↓키나 Esc키로 Re:Clip을 숨길 수 있습니다.
+                    <LineBreak/>
+                    아이템을 선택한 채로 복사하거나 붙여넣으면 선택된 아이템이 복사됩니다.
+                </TextBlock>
+                <Polyline
+                    Grid.Row="1"
+                    Margin="200,0"
+                    HorizontalAlignment="Left"
+                    Fill="Gray"
+                    Points="5 10 0 0 10 0 10 0"/>
+            </Grid>
         </Grid>
 
 

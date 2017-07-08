@@ -83,6 +83,7 @@
     <Compile Include="Database\BitmapCache\BitmapCacheItem.cs" />
     <Compile Include="Database\ClipItemData.cs" />
     <Compile Include="Database\SettingDB.cs" />
+    <Compile Include="Extensions\EnumEx.cs" />
     <Compile Include="HotKey\HotKeyData.cs" />
     <Compile Include="HotKey\HotKeyEventArgs.cs" />
     <Compile Include="HotKey\HotKeyManager.cs" />

@@ -50,7 +50,6 @@ namespace ReClip.Setting
         public bool ExceptImageItem { get; set; }
         public bool ExceptTextItem { get; set; }
         public bool ExceptFileItem { get; set; }
-        
         #endregion
 
         public EnvironmentSetting Clone()

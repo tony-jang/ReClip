@@ -30,6 +30,7 @@ using WinClipboard = System.Windows.Forms.Clipboard;
 using WinBitmap = System.Drawing.Bitmap;
 using BitmapDB = ReClip.Database.BitmapCache;
 using ReClip.Setting;
+using ReClip.Extensions;
 
 namespace ReClip
 {
@@ -63,11 +64,13 @@ namespace ReClip
             this.Closing += MainWindow_Closing;
 
             SetWindow();
-            this.Hide();
+
+            Appear();
             
             itemDB = new ClipItemData();
             settingdb = new SettingDB();
             strectch = settingdb.GetSetting().StrectchThumbnail;
+
             InitializeItem();
 
             this.Closed += (sender, e) =>
@@ -402,6 +405,8 @@ namespace ReClip
             ClipItem Item = null;
             if (clip is StringClip strClip)
             {
+                if (string.IsNullOrEmpty(strClip.Data))
+                    return;
                 Item = new StringClipItem(strClip.Data)
                 {
                     Id = strClip.Id,
@@ -447,6 +452,7 @@ namespace ReClip
                 Item.PreviewMouseDown += Itm_MouseDown;
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
+                infoBalloon.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
                 lvClip.SelectedItem = Item;
             }
@@ -511,8 +517,9 @@ namespace ReClip
             var menu = new f.ContextMenu();
 
             f.MenuItem[] itms = { new f.MenuItem() { Index = 0, Text = "버전 정보" },
-                                  new f.MenuItem() { Index = 1, Text = "설정"},
-                                  new f.MenuItem() { Index = 2, Text = "종료"}};
+                                  new f.MenuItem() { Index = 1, Text = "Re:Clip 보이기"},
+                                  new f.MenuItem() { Index = 2, Text = "설정"},
+                                  new f.MenuItem() { Index = 3, Text = "종료"}};
 
             menu.MenuItems.AddRange(itms);
             
@@ -520,9 +527,16 @@ namespace ReClip
 
             itms[0].Click += delegate (object o, EventArgs e) { new VersionWindow().ShowDialog(); };
 
-            itms[1].Click += delegate (object o, EventArgs e) { settingdb.SetSetting(new SettingWindow(settingdb.GetSetting()).ShowDialog()); };
+            itms[1].Click += delegate (object o, EventArgs e) 
+            {
+                this.Show();
+                SetWindow();
+                Appear();
+            };
 
-            itms[2].Click += delegate (object o, EventArgs e) { Environment.Exit(0); };
+            itms[2].Click += delegate (object o, EventArgs e) { settingdb.SetSetting(new SettingWindow(settingdb.GetSetting()).ShowDialog()); };
+
+            itms[3].Click += delegate (object o, EventArgs e) { Environment.Exit(0); };
 
             icon = new f.NotifyIcon()
             {
@@ -559,7 +573,21 @@ namespace ReClip
         int LastIndex = 0;
 
         #endregion
-        
+
+        /// <summary>
+        /// 현재 선택된 아이템의 오프셋 값을 가져옵니다.
+        /// </summary>
+        /// <returns></returns>
+        public double GetCurrentOffset()
+        {
+            double offset = ((lvClip.SelectedIndex + 1) * 140) - 70;
+            var viewer = lvClip.GetDescendantByType(typeof(AniScrollViewer)) as AniScrollViewer;
+
+            double finalOffset = offset - viewer.HorizontalOffset;
+
+            return finalOffset;
+        }
+
         private void ClipListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = lvClip.Items.IndexOf(lvClip.SelectedItem);
@@ -589,15 +617,16 @@ namespace ReClip
                 VisibleInfoBalloon();
 
                 var thick = infoLower.Margin;
-                thick.Left = GetCurrentOffset() + differ + (this.Width - lvClip.ActualWidth) / 2;
+                double listViewOffset = this.Width - allWidth > 0 ? this.Width - allWidth : 0D;
+                thick.Left = GetCurrentOffset() + differ + listViewOffset / 2;
                 infoLower.Margin = thick;
 
                 var thick2 = infoUpper.Margin;
-                thick2.Left = GetCurrentOffset() + differ - infoUpper.ActualWidth / 2 + (this.Width - lvClip.ActualWidth) / 2;
+                thick2.Left = GetCurrentOffset() + differ - infoUpper.ActualWidth / 2 + listViewOffset / 2;
                 if (thick2.Left < 0)
                     thick2.Left = 0;
                 else if ((thick2.Left + infoUpper.Width > this.Width))
-                    thick2.Left = this.Width - infoUpper.Width + (this.Width - lvClip.ActualWidth) / 2;
+                    thick2.Left = this.Width - infoUpper.Width + listViewOffset / 2;
 
                 infoUpper.Margin = thick2;
 
@@ -623,11 +652,26 @@ namespace ReClip
                 bool UnknownFormat = false;
                 ClipItem Item = null;
 
+                var itmCount = settingdb.GetSetting().SaveCount.GetAttribute<ItemCountAttribute>().Count;
+
+                if (itmCount <= lvClip.Items.Count)
+                {
+                    LastIndex = lvClip.SelectedIndex;
+
+                    if (lvClip.Items[0] is ClipItem itm)
+                        itemDB.Remove(itm.Id);
+                    
+                    lvClip.Items.RemoveAt(0);
+                }
+
                 if (format == ClipboardFormat.Text)
                 {
                     if (format != lastFormat || lastText != data.ToString())
                     {
                         string text = data.ToString();
+
+                        if (string.IsNullOrEmpty(text))
+                            return;
 
                         long Key = KeyGenerator.GenerateKey();
 
@@ -703,6 +747,7 @@ namespace ReClip
                         Item.PreviewMouseDown += Itm_MouseDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                         Item.Time = DateTime.Now;
+                        infoBalloon.Visibility = Visibility.Hidden;
                         lvClip.Items.Add(Item);
                         lvClip.SelectedItem = Item;
                     }
@@ -730,34 +775,40 @@ namespace ReClip
             var item = sender as ClipItem;
 
             bool Unknown = false;
+            try
+            {
+                if (item is ImageClipItem imageItem)
+                {
+                    var bitmap = BitmapDB.GetBitmapFromCRC32(imageItem.CRC32);
+                    handled = true;
+                    WinClipboard.SetImage(bitmap);
+                    bitmap.Dispose();
+                }
+                else if (item is StringClipItem stringItem)
+                {
+                    handled = true;
+                    if (string.IsNullOrEmpty(stringItem.Text))
+                        return;
+                    WinClipboard.SetText(stringItem.Text);
+                }
+                else if (item is FileClipItem fileItem)
+                {
+                    handled = true;
 
-            if (item is ImageClipItem imageItem)
-            {
-                var bitmap = BitmapDB.GetBitmapFromCRC32(imageItem.CRC32);
-                handled = true;
-                WinClipboard.SetImage(bitmap);
-                bitmap.Dispose();
-            }
-            else if (item is StringClipItem stringItem)
-            {
-                handled = true;
-                if (string.IsNullOrEmpty(stringItem.Text))
-                    return;
-                WinClipboard.SetText(stringItem.Text);
-            }
-            else if (item is FileClipItem fileItem)
-            {
-                handled = true;
+                    StringCollection coll = new StringCollection();
+                    coll.AddRange(fileItem.FilePaths);
 
-                StringCollection coll = new StringCollection();
-                coll.AddRange(fileItem.FilePaths);
-
-                WinClipboard.SetFileDropList(coll);
+                    WinClipboard.SetFileDropList(coll);
+                }
+                else
+                {
+                    Unknown = true;
+                }
             }
-            else
+            catch (Exception)
             {
-                Unknown = true;
             }
+            
             if (!Unknown)
                 (sender as ClipItem).ShowComplete();
         }
@@ -933,15 +984,7 @@ namespace ReClip
             }
         }
 
-        public double GetCurrentOffset()
-        {
-            double offset = ((lvClip.SelectedIndex + 1) * 140) - 70;
-            var viewer = lvClip.GetDescendantByType(typeof(AniScrollViewer)) as AniScrollViewer;
-
-            double finalOffset = offset - viewer.HorizontalOffset;
-
-            return finalOffset;
-        }
+        
 
         private static T FindAnchestor<T>(DependencyObject current) where T : DependencyObject
         {
@@ -986,6 +1029,11 @@ namespace ReClip
         public void SetDate(DateTime time)
         {
             runSaveTime.Text = time.ToString();
+        }
+
+        private void infoBalloon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            infoBalloon.Visibility = Visibility.Hidden;
         }
     }
 
