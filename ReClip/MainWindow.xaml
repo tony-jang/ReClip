@@ -84,6 +84,22 @@
                     Fill="Gray"
                     Points="5 10 0 0 10 0 10 0"/>
             </Grid>
+            <Grid x:Name="infoBalloon2" VerticalAlignment="Bottom" HorizontalAlignment="Right" MouseDown="infoBalloon2_MouseDown">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Background="Gray"/>
+                <TextBlock Margin="15">
+                    <Run Text="만일 Re:Clip을 닫을 수 없을때는 이 버튼을 눌러서 닫을 수 있습니다."/>
+                </TextBlock>
+                <Polyline
+                    Grid.Row="1"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    Fill="Gray"
+                    Points="5,10 0,0 10,0 10,0"/>
+            </Grid>
         </Grid>
 
 
@@ -109,6 +125,39 @@
                 VerticalAlignment="Center"
                 Foreground="White"
                 Text="현재 저장된 클립보드 내용이 없습니다. 내용을 클립보드로 복사하시면 Re:Clip에 추가됩니다." />
+            <Button x:Name="btnDisappear" 
+                    Content="↓" 
+                    HorizontalAlignment="Right" 
+                    Margin="0" 
+                    VerticalAlignment="Top" 
+                    Width="25" 
+                    Height="25" 
+                    Click="btnDisappear_Click">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="#72000000"/>
+                        <Setter Property="Foreground" Value="White"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#7FC8C8C8"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#7F808080"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
             <!--<TextBlock x:Name="debugtb" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Foreground="White"/>-->
         </Grid>
     </Grid>

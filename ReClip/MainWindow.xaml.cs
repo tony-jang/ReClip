@@ -22,15 +22,18 @@ using ReClip.Database;
 using ReClip.Clips;
 using ReClip.Windows;
 using ReClip.HotKey;
+using ReClip.Setting;
+using ReClip.Extensions;
 
 using Gma.System.MouseKeyHook;
+
+using static ReClip.Extensions.EnumEx;
 
 using f = System.Windows.Forms;
 using WinClipboard = System.Windows.Forms.Clipboard;
 using WinBitmap = System.Drawing.Bitmap;
 using BitmapDB = ReClip.Database.BitmapCache;
-using ReClip.Setting;
-using ReClip.Extensions;
+
 
 namespace ReClip
 {
@@ -66,7 +69,8 @@ namespace ReClip
             SetWindow();
 
             Appear();
-            
+
+            BitmapDB.Open();
             itemDB = new ClipItemData();
             settingdb = new SettingDB();
             strectch = settingdb.GetSetting().StrectchThumbnail;
@@ -77,7 +81,7 @@ namespace ReClip
             {
                 ClipboardMonitor.Stop();
             };
-            
+
             hook.MouseDown += Hook_MouseDown;
             hook.MouseUp += Hook_MouseUp;
             hook.KeyDown += Hook_KeyDown;
@@ -315,7 +319,7 @@ namespace ReClip
                 tbPreviewText.Visibility = Visibility.Visible;
                 tbPreviewImage.Visibility = Visibility.Hidden;
                 string txt = strItm.Text.Replace(Environment.NewLine, " ");
-                if (strItm.Text.Length > 200)
+                if (txt.Length > 200)
                     txt = txt.Substring(0, 200);
 
                 tbPreviewText.Text = txt;
@@ -453,6 +457,7 @@ namespace ReClip
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
                 infoBalloon.Visibility = Visibility.Hidden;
+                infoBalloon2.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
                 lvClip.SelectedItem = Item;
             }
@@ -647,107 +652,117 @@ namespace ReClip
                 (currentSetting.ExceptImageItem && format == ClipboardFormat.Bitmap) ||
                 (currentSetting.ExceptTextItem && format == ClipboardFormat.Text)) return;
 
+
+
             if (!handled)
             {
                 bool UnknownFormat = false;
                 ClipItem Item = null;
 
-                var itmCount = settingdb.GetSetting().SaveCount.GetAttribute<ItemCountAttribute>().Count;
-
-                if (itmCount <= lvClip.Items.Count)
+                try
                 {
-                    LastIndex = lvClip.SelectedIndex;
+                    var itmCount = settingdb.GetSetting().SaveCount.GetAttribute<ItemCountAttribute>().Count;
 
-                    if (lvClip.Items[0] is ClipItem itm)
-                        itemDB.Remove(itm.Id);
-                    
-                    lvClip.Items.RemoveAt(0);
-                }
-
-                if (format == ClipboardFormat.Text)
-                {
-                    if (format != lastFormat || lastText != data.ToString())
+                    if (itmCount <= lvClip.Items.Count)
                     {
-                        string text = data.ToString();
+                        LastIndex = lvClip.SelectedIndex;
 
-                        if (string.IsNullOrEmpty(text))
-                            return;
+                        if (lvClip.Items[0] is ClipItem itm)
+                            itemDB.Remove(itm.Id);
 
-                        long Key = KeyGenerator.GenerateKey();
-
-                        if (string.IsNullOrEmpty(text)) return;
-                        Item = new StringClipItem(text);
-                        Item.Id = Key;
-                        
-                        itemDB.Add(new StringClip(text, Key));
-
-                        lastText = text;
+                        lvClip.Items.RemoveAt(0);
                     }
-                }
-                else if (format == ClipboardFormat.Bitmap)
-                {
-                    if (data is WinBitmap bmp)
+
+                    if (format == ClipboardFormat.Text)
                     {
-                        uint crc32 = bmp.GetCRC32();
-                        
-                        ImageSource thumbnail = bmp.ToThumbnail(strectch);
-
-                        long Key = KeyGenerator.GenerateKey();
-                        Item = new ImageClipItem(thumbnail, crc32);
-                        Item.Id = Key;
-                        
-                        if (lvClip.Items
-                            .Cast<ClipItem>()
-                            .Where(child => child is ImageClipItem)
-                            .Count(child => (child as ImageClipItem).CRC32 == crc32) > 0)
+                        if (format != lastFormat || lastText != data.ToString())
                         {
-                            return;
-                        }
+                            string text = data.ToString();
 
-                        BitmapDB.AddBitmap(bmp);
+                            if (string.IsNullOrEmpty(text))
+                                return;
 
-                        itemDB.Add(new ImageClip(crc32, Key));
-                        
-                        lastImage = thumbnail;
-                    }
-                }
-                else if (format == ClipboardFormat.FileDrop)
-                {
-                    if (data is string[] files)
-                    {
-                        if (format != lastFormat || !Enumerable.SequenceEqual(lastStrArr, files))
-                        {
                             long Key = KeyGenerator.GenerateKey();
-                            
-                            Item = new FileClipItem(files);
 
-                            string str = string.Join(Environment.NewLine, files.Take(10));
-                            ((FileClipItem)Item).PreviewText = str;
-
+                            if (string.IsNullOrEmpty(text)) return;
+                            Item = new StringClipItem(text);
                             Item.Id = Key;
 
-                            var itm = new FileClip(files, Key);
-                            itemDB.Add(itm);
+                            itemDB.Add(new StringClip(text, Key));
 
-                            lastStrArr = files;
+                            lastText = text;
                         }
                     }
+                    else if (format == ClipboardFormat.Bitmap)
+                    {
+                        if (data is WinBitmap bmp)
+                        {
+                            uint crc32 = bmp.GetCRC32();
+
+                            ImageSource thumbnail = bmp.ToThumbnail(strectch);
+
+                            long Key = KeyGenerator.GenerateKey();
+                            Item = new ImageClipItem(thumbnail, crc32);
+                            Item.Id = Key;
+
+                            if (lvClip.Items
+                                .Cast<ClipItem>()
+                                .Where(child => child is ImageClipItem)
+                                .Count(child => (child as ImageClipItem).CRC32 == crc32) > 0)
+                            {
+                                return;
+                            }
+
+                            BitmapDB.AddBitmap(bmp);
+
+                            itemDB.Add(new ImageClip(crc32, Key));
+
+                            lastImage = thumbnail;
+                        }
+                    }
+                    else if (format == ClipboardFormat.FileDrop)
+                    {
+                        if (data is string[] files)
+                        {
+                            if (format != lastFormat || !Enumerable.SequenceEqual(lastStrArr, files))
+                            {
+                                long Key = KeyGenerator.GenerateKey();
+
+                                Item = new FileClipItem(files);
+
+                                string str = string.Join(Environment.NewLine, files.Take(10));
+                                ((FileClipItem)Item).PreviewText = str;
+
+                                Item.Id = Key;
+
+                                var itm = new FileClip(files, Key);
+                                itemDB.Add(itm);
+
+                                lastStrArr = files;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        UnknownFormat = true;
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    UnknownFormat = true;
                 }
+                
 
                 if (!UnknownFormat)
                 {
                     try
                     {
-                        //if (settingdb.GetSetting().SaveCount.GetCount() <= lvClip.Items.Count)
-                        //    goto handle;
+                        if (settingdb.GetSetting().SaveCount.GetAttribute<ItemCountAttribute>().Count <= lvClip.Items.Count)
+                            goto handle;
                         Item.PreviewMouseDown += Itm_MouseDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                         Item.Time = DateTime.Now;
                         infoBalloon.Visibility = Visibility.Hidden;
+                        infoBalloon2.Visibility = Visibility.Hidden;
                         lvClip.Items.Add(Item);
                         lvClip.SelectedItem = Item;
                     }
@@ -1034,6 +1049,16 @@ namespace ReClip
         private void infoBalloon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             infoBalloon.Visibility = Visibility.Hidden;
+        }
+
+        private void btnDisappear_Click(object sender, RoutedEventArgs e)
+        {
+            Disappear();
+        }
+
+        private void infoBalloon2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            infoBalloon2.Visibility = Visibility.Hidden;
         }
     }
 

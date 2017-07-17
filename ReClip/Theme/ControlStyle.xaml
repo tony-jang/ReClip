@@ -186,10 +186,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:ImageClipItem}">
                     <Grid Background="{TemplateBinding Background}" Height="{TemplateBinding Height}">
-                        <Grid.ToolTip>
-                            <ToolTip Content="Comment Here"/>
-                        </Grid.ToolTip>
-
                         <Image Source="{TemplateBinding Source}" Height="{TemplateBinding Height}" Stretch="Uniform"/>
 
                         <Image Source="/ReClip;Component/Image/PictureIcon.png" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Width="15"/>
