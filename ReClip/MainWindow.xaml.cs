@@ -456,8 +456,6 @@ namespace ReClip
                 Item.PreviewMouseDown += Itm_MouseDown;
                 Item.MouseDoubleClick += Itm_MouseDoubleClick;
                 TBInfo.Visibility = Visibility.Hidden;
-                infoBalloon.Visibility = Visibility.Hidden;
-                infoBalloon2.Visibility = Visibility.Hidden;
                 lvClip.Items.Add(Item);
                 lvClip.SelectedItem = Item;
             }
@@ -550,7 +548,7 @@ namespace ReClip
                 Visible = true,
                 Icon = Properties.Resources.ReClipIcon,
                 BalloonTipTitle = "Re:Clip",
-                BalloonTipText = "Re:Clip Running!"
+                BalloonTipText = "Re:Clip이 실행되었습니다."
             };
 
             icon.ShowBalloonTip(1000);
@@ -761,8 +759,6 @@ namespace ReClip
                         Item.PreviewMouseDown += Itm_MouseDown;
                         Item.MouseDoubleClick += Itm_MouseDoubleClick;
                         Item.Time = DateTime.Now;
-                        infoBalloon.Visibility = Visibility.Hidden;
-                        infoBalloon2.Visibility = Visibility.Hidden;
                         lvClip.Items.Add(Item);
                         lvClip.SelectedItem = Item;
                     }
@@ -857,7 +853,7 @@ namespace ReClip
             DoubleAnimation oAnim = new DoubleAnimation();
             DoubleAnimation tAnim = new DoubleAnimation();
 
-            oAnim.Completed += Appear_Comp;
+            oAnim.Completed += AppearAnimationCompleted;
             oAnim.From = 0; oAnim.To = 1.0;
 
             tAnim.From = lastTop + 60;
@@ -879,7 +875,7 @@ namespace ReClip
 
         OpenState process = OpenState.None;
 
-        private void Appear_Comp(object sender, EventArgs e)
+        private void AppearAnimationCompleted(object sender, EventArgs e)
         {
             FrmOpening = false;
             if (lvClip.Items.Count == 0)
@@ -896,7 +892,6 @@ namespace ReClip
                     break;
                 case OpenState.MoveRight:
                     lvClip.SelectedIndex++;
-
                     break;
             }
 
@@ -1046,19 +1041,9 @@ namespace ReClip
             runSaveTime.Text = time.ToString();
         }
 
-        private void infoBalloon_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            infoBalloon.Visibility = Visibility.Hidden;
-        }
-
         private void btnDisappear_Click(object sender, RoutedEventArgs e)
         {
             Disappear();
-        }
-
-        private void infoBalloon2_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            infoBalloon2.Visibility = Visibility.Hidden;
         }
     }
 

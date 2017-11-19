@@ -64,42 +64,6 @@
                     Fill="#7F000000"
                     Points="5 10 0 0 10 0 10 0" />
             </Grid>
-            <Grid x:Name="infoBalloon" VerticalAlignment="Bottom" HorizontalAlignment="Center" MouseDown="infoBalloon_MouseDown">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Border Background="Gray"/>
-                <TextBlock Margin="15">
-                    Ctrl + ↑키로 Re:Clip을 띄웁니다.
-                    <LineBreak/>
-                    Ctrl + ↓키나 Esc키로 Re:Clip을 숨길 수 있습니다.
-                    <LineBreak/>
-                    아이템을 선택한 채로 복사하거나 붙여넣으면 선택된 아이템이 복사됩니다.
-                </TextBlock>
-                <Polyline
-                    Grid.Row="1"
-                    Margin="200,0"
-                    HorizontalAlignment="Left"
-                    Fill="Gray"
-                    Points="5 10 0 0 10 0 10 0"/>
-            </Grid>
-            <Grid x:Name="infoBalloon2" VerticalAlignment="Bottom" HorizontalAlignment="Right" MouseDown="infoBalloon2_MouseDown">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Border Background="Gray"/>
-                <TextBlock Margin="15">
-                    <Run Text="만일 Re:Clip을 닫을 수 없을때는 이 버튼을 눌러서 닫을 수 있습니다."/>
-                </TextBlock>
-                <Polyline
-                    Grid.Row="1"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    Fill="Gray"
-                    Points="5,10 0,0 10,0 10,0"/>
-            </Grid>
         </Grid>
 
 
@@ -159,6 +123,29 @@
                 </Button.Style>
             </Button>
             <!--<TextBlock x:Name="debugtb" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Foreground="White"/>-->
+        </Grid>
+
+        <Grid Background="#7F000000" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock FontSize="40" VerticalAlignment="Center" Margin="40,0">
+                Re:Clip 튜토리얼을 시작합니다.<LineBreak/>
+                <Run FontSize="25">튜토리얼을 원치 않으시면 '건너뛰기'를 눌러주세요.</Run><LineBreak/>
+                <Run FontSize="25">튜토리얼에서 ReClip의 사용법과 활용방법을 배웁니다.</Run>
+            </TextBlock>
+
+            <Grid Grid.Row="1" HorizontalAlignment="Right" Width="400" Margin="10,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--TODO: Add Button Style-->
+                <Button Content="건너뛰기" FontSize="20"/>
+                <Button Content="계속" FontSize="20" Padding="10" Grid.Column="2"/>
+            </Grid>
         </Grid>
     </Grid>
 
