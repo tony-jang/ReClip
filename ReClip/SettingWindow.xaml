@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReClip"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="Re:Clip 설정" Height="700" Width="400" ResizeMode="NoResize">
+        Title="Re:Clip 설정" Height="700" Width="400" ResizeMode="NoResize" Icon="Image/ReClipIcon.png">
     <!--500-->
     <Grid>
         <Grid.RowDefinitions>
@@ -50,6 +50,7 @@
                     <StackPanel Margin="10">
                         <CheckBox x:Name="cbClipboard" Content="클립보드 저장 기능 활성화" Checked="cbClipboard_Checked" Unchecked="cbClipboard_Checked"/>
                         <CheckBox x:Name="cbThumbnailStretch" Content="썸네일 늘리기" Margin="0,10,0,0" Checked="cbThumbnailStretch_Checked" Unchecked="cbThumbnailStretch_Checked"/>
+                        <CheckBox x:Name="cbStartup" Content="시작 프로그램으로 등록" Margin="0,10,0,0" Checked="cbStartup_Unchecked" Unchecked="cbStartup_Unchecked"/>
                         <TextBlock Text="※ 프로그램을 재실행 하면 적용됩니다." Margin="0,5,0,0"/>
                     </StackPanel>
                 </GroupBox>

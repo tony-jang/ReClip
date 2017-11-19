@@ -1,4 +1,5 @@
-﻿using ReClip.Control;
+﻿using Microsoft.Win32;
+using ReClip.Control;
 using ReClip.Setting;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,8 @@ namespace ReClip
             cbSaveExceptImg.IsChecked = Temp.ExceptImageItem;
             cbSaveExceptText.IsChecked = Temp.ExceptTextItem;
             cbSaveExceptFile.IsChecked = Temp.ExceptFileItem;
+
+            cbStartup.IsChecked = Temp.SetStartupProgram;
         }
 
         public void SyncItem()
@@ -65,7 +68,12 @@ namespace ReClip
 
             if (SuccessfulHandled)
             {
-                return Temp; 
+                if (Temp.SetStartupProgram)
+                    reg.SetValue("ReClip", $@"""{AppDomain.CurrentDomain.BaseDirectory}{AppDomain.CurrentDomain.FriendlyName}"" -bystartup");
+                else
+                    reg.DeleteValue("ReClip");
+
+                return Temp;
             }
             else
             {
@@ -231,17 +239,30 @@ namespace ReClip
 
         private void cbSaveExceptImg_Checked(object sender, RoutedEventArgs e)
         {
-            if (Temp != null) Temp.ExceptImageItem = cbSaveExceptImg.IsChecked.Value;
+            if (Temp != null)
+                Temp.ExceptImageItem = cbSaveExceptImg.IsChecked.Value;
         }
 
         private void cbSaveExceptText_Checked(object sender, RoutedEventArgs e)
         {
-            if (Temp != null) Temp.ExceptTextItem = cbSaveExceptText.IsChecked.Value;
+            if (Temp != null)
+                Temp.ExceptTextItem = cbSaveExceptText.IsChecked.Value;
         }
 
         private void cbSaveExceptFile_Checked(object sender, RoutedEventArgs e)
         {
-            if (Temp != null) Temp.ExceptFileItem = cbSaveExceptFile.IsChecked.Value;
+            if (Temp != null)
+                Temp.ExceptFileItem = cbSaveExceptFile.IsChecked.Value;
+        }
+
+
+        static RegistryKey regKey = Registry.CurrentUser;
+        static RegistryKey reg = regKey.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+        private void cbStartup_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (Temp != null)
+                Temp.SetStartupProgram = cbStartup.IsChecked.Value;
+            
         }
 
         public ItemSaveTypes IndexToSaveCounts()

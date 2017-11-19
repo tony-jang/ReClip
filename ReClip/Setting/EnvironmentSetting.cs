@@ -50,6 +50,7 @@ namespace ReClip.Setting
         public bool ExceptImageItem { get; set; }
         public bool ExceptTextItem { get; set; }
         public bool ExceptFileItem { get; set; }
+        public bool SetStartupProgram { get; set; }
         #endregion
 
         public EnvironmentSetting Clone()
@@ -61,7 +62,8 @@ namespace ReClip.Setting
                 ExceptImageItem = this.ExceptImageItem,
                 ExceptTextItem = this.ExceptTextItem,
                 SaveCount = this.SaveCount,
-                StrectchThumbnail = this.StrectchThumbnail
+                StrectchThumbnail = this.StrectchThumbnail,
+                SetStartupProgram = this.SetStartupProgram
             };
         }
 
@@ -76,7 +78,8 @@ namespace ReClip.Setting
                         this.ExceptImageItem == setting.ExceptImageItem &&
                         this.ExceptTextItem == setting.ExceptTextItem &&
                         this.SaveCount == setting.SaveCount &&
-                        this.StrectchThumbnail == setting.StrectchThumbnail)
+                        this.StrectchThumbnail == setting.StrectchThumbnail && 
+                        this.SetStartupProgram == setting.SetStartupProgram)
                     {
                         return true;
                     }
