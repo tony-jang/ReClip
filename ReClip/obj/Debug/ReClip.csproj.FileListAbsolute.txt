@@ -76,3 +76,5 @@ D:\YT's Files\C# Files\ReClip\ReClip\obj\Debug\ReClip.csproj.GenerateResource.Ca
 D:\YT's Files\C# Files\ReClip\ReClip\obj\Debug\ReClip.exe
 D:\YT's Files\C# Files\ReClip\ReClip\obj\Debug\ReClip.pdb
 H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\ReClip.csproj.CoreCompileInputs.cache
+H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\Windows\TutorialWindow.g.cs
+H:\장유탁 파일\Github Project\ReClip\ReClip\obj\Debug\Windows\TutorialWindow.baml

@@ -45,6 +45,7 @@ namespace ReClip
 
         public MainWindow()
         {
+
             InitializeComponent();
             InitializeHotKeys();
             InitializeNotifyIcon();
@@ -86,6 +87,22 @@ namespace ReClip
             hook.MouseUp += Hook_MouseUp;
             hook.KeyDown += Hook_KeyDown;
             this.PreviewMouseDown += MainWindow_MouseDown;
+
+            try
+            {
+                TutorialWindow tutorialWindow = new TutorialWindow();
+
+                tutorialWindow.Show();
+                tutorialWindow.Activate();
+                this.Topmost = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception 발생!");
+                throw;
+            }
+            
+
         }
         bool WindowClicked = false;
         private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
@@ -135,8 +152,7 @@ namespace ReClip
                 {
                     Name = "Visible",
 
-                    Control = true,
-                    Key = f.Keys.Up,
+                    Control = true, Key = f.Keys.Up,
                     Action = Act_Appear
                 });
             HotKeyManager.AddHotKey(
@@ -152,8 +168,7 @@ namespace ReClip
                 {
                     Name = "InVisible2",
 
-                    Control = true,
-                    Key = f.Keys.Down,
+                    Control = true, Key = f.Keys.Down,
                     Action = Act_Disappear
                 });
             HotKeyManager.AddHotKey(
@@ -201,8 +216,7 @@ namespace ReClip
                 {
                     Name = "CopyItem",
 
-                    Control = true,
-                    Key = f.Keys.C,
+                    Control = true, Key = f.Keys.C,
                     Action = Act_Copy
                 });
             HotKeyManager.AddHotKey(
@@ -210,16 +224,15 @@ namespace ReClip
                 {
                     Name = "PasteItem",
 
-                    Control = true,
-                    Key = f.Keys.V,
+                    Control = true, Key = f.Keys.V,
                     Action = Act_Paste
                 });
             HotKeyManager.AddHotKey(
                 new HotKeyData()
                 {
-                    Name = "",
-                    Control = true,
-                    
+                    Name = "Debug",
+
+                    Control = true,                   
                     Key = f.Keys.D,
                     Action = Act_Debug
                 });
