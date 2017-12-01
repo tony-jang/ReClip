@@ -9,7 +9,7 @@ using WPFExtension;
 
 namespace ReClip.Control
 {
-    abstract class ClipItem : ListViewItem
+    public abstract class ClipItem : ListViewItem
     {
         public abstract void ShowComplete();
 
